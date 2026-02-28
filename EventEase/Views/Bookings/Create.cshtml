@@ -38,4 +38,13 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Simple JS to remind specialists to check dates
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const confirmed = confirm("Specialist Check: Have you verified there are no conflicts for this date in the physical log?");
+            if (!confirmed) {
+                e.preventDefault();
+            }
+        });
+    </script>
 }

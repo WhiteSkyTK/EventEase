@@ -1,42 +1,39 @@
 ﻿@{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center py-5">
-    <h1 class="display-4 fw-bold" style="color: var(--primary-color);">Welcome, Booking Specialist! 🎈</h1>
-    <p class="lead">Managing EventEase venues, schedules, and bookings has never been this fun.</p>
+<div class="text-center py-5 mb-5" style="background: var(--accent-color); border: 3px solid var(--text-color); border-radius: 30px; box-shadow: 10px 10px 0px var(--secondary-color);">
+    <h1 class="display-4 fw-bold">Welcome to EventEase 🥳</h1>
+    <p class="lead fw-bold text-dark">Simplifying your celebrations, one booking at a time.</p>
 </div>
 
 <div class="row g-4">
     <div class="col-md-4">
-        <div class="card h-100 border-3 text-center p-3" style="border-color: var(--text-color); box-shadow: 8px 8px 0px var(--secondary-color);">
-            <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=500&q=80" class="card-img-top rounded-4" alt="Venues">
-            <div class="card-body">
-                <h3 class="card-title">Manage Venues</h3>
-                <p class="card-text">Add new ballrooms, gardens, or halls to our catalog.</p>
-                <a asp-controller="Venues" asp-action="Index" class="btn btn-primary w-100">Go to Venues</a>
+        <div class="card h-100 border-3 p-3">
+            <div class="card-body text-center">
+                <h3 class="fw-bold">Explore Venues</h3>
+                <p>Check capacity and locations for our whimsical spaces.</p>
+                <a asp-controller="Venues" asp-action="Index" class="btn btn-primary w-100 mt-3">View Gallery</a>
             </div>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card h-100 border-3 text-center p-3" style="border-color: var(--text-color); box-shadow: 8px 8px 0px var(--accent-color);">
-            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=500&q=80" class="card-img-top rounded-4" alt="Events">
-            <div class="card-body">
-                <h3 class="card-title">Upcoming Events</h3>
-                <p class="card-text">View and schedule events even before a venue is assigned.</p>
-                <a asp-controller="Events" asp-action="Index" class="btn btn-primary w-100">Go to Events</a>
+        <div class="card h-100 border-3 p-3">
+            <div class="card-body text-center">
+                <h3 class="fw-bold">Upcoming Events</h3>
+                <p>See what's already scheduled to avoid date conflicts.</p>
+                <a asp-controller="Events" asp-action="Index" class="btn btn-primary w-100 mt-3">View Schedule</a>
             </div>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card h-100 border-3 text-center p-3" style="border-color: var(--text-color); box-shadow: 8px 8px 0px var(--primary-color);">
-            <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=500&q=80" class="card-img-top rounded-4" alt="Bookings">
-            <div class="card-body">
-                <h3 class="card-title">Live Bookings</h3>
-                <p class="card-text">Prevent double-bookings and manage existing reservations.</p>
-                <a asp-controller="Bookings" asp-action="Index" class="btn btn-primary w-100">Go to Bookings</a>
+        <div class="card h-100 border-3 p-3" style="background-color: #fff9db;">
+            <div class="card-body text-center">
+                <h3 class="fw-bold text-danger">Specialist Portal</h3>
+                <p>Ready to finalize a booking? Start the process here.</p>
+                <a asp-controller="Bookings" asp-action="Create" class="btn btn-dark w-100 mt-3">✨ New Booking</a>
             </div>
         </div>
     </div>

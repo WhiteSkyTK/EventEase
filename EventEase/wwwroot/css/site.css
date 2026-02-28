@@ -1,8 +1,10 @@
 /* Import a Whimsical Font */
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
 
-html {
-    height: 100%;
+html, body {
+    height: 100% !important;
+    margin: 0;
+    padding: 0;
 }
 
 :root {
@@ -47,14 +49,16 @@ body {
     position: relative;
 }
 
-.btn-primary {
-    background-color: var(--primary-color);
-    color: white;
+/* Make standard buttons look like our "Bouncy" buttons */
+.btn-primary, .btn-danger, .btn-success {
+    border: 2px solid var(--text-color) !important;
+    box-shadow: 3px 3px 0px var(--text-color);
+    transition: 0.2s;
 }
 
 .btn:hover {
-    transform: scale(1.05) rotate(-2deg);
-    box-shadow: 4px 4px 0px var(--text-color);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px var(--text-color);
 }
 
 /* Card Styling for CRUD Content */
@@ -94,9 +98,27 @@ body {
 
 /* Floating Table Effect */
 .table {
-    border-collapse: separate;
-    border-spacing: 0 10px;
+    background: white;
+    border: 3px solid var(--text-color) !important;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 8px 8px 0px var(--accent-color);
 }
+
+    .table thead {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+
+    .table th {
+        border-bottom: 3px solid var(--text-color) !important;
+        padding: 15px !important;
+    }
+
+    .table td {
+        padding: 12px !important;
+        vertical-align: middle;
+    }
 
     .table tr {
         background-color: white;
@@ -124,9 +146,45 @@ textarea.form-control {
 }
 
 .container-wrapper {
-    flex: 1 0 auto;
+    flex: 1 0 auto; /* This says: 'Grow to fill space, but don't shrink' */
+    display: flex;
+    flex-direction: column;
 }
 
 footer {
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevents the footer from squishing */
+    width: 100%;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 2px solid var(--text-color);
+    font-weight: bold;
+    display: inline-block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.status-confirmed {
+    background-color: #4ecdc4;
+    color: white;
+}
+/* Mint Green */
+.status-pending {
+    background-color: #ffe66d;
+    color: var(--text-color);
+}
+/* Sun Yellow */
+.status-conflict {
+    background-color: #ff6b6b;
+    color: white;
+}
+/* Playful Red */
+
+/* Simple Hover Animation for Tables */
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 230, 109, 0.2) !important;
+    cursor: pointer;
 }
