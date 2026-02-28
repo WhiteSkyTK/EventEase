@@ -1,47 +1,60 @@
-@model EventEase.Models.Event
+﻿@model EventEase.Models.Event
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Schedule New Event";
 }
 
-<h1>Create</h1>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">📅 Schedule an Event</h1>
+        <a asp-action="Index" class="btn btn-outline-dark">← Back to List</a>
+    </div>
 
-<h4>Event</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="EventName" class="control-label"></label>
-                <input asp-for="EventName" class="form-control" />
-                <span asp-validation-for="EventName" class="text-danger"></span>
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-3 p-4" style="border-color: var(--text-color); border-radius: 20px;">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="EventName" class="form-label fw-bold">Event Name</label>
+                        <input asp-for="EventName" class="form-control" placeholder="e.g. Smith Wedding Reception" />
+                        <span asp-validation-for="EventName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-bold">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Tell us about the event..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EventDate" class="form-label fw-bold">Date & Time</label>
+                            <input asp-for="EventDate" class="form-control" />
+                            <span asp-validation-for="EventDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="VenueId" class="form-label fw-bold">Assign Venue</label>
+                            <select asp-for="VenueId" class="form-select border-3" asp-items="ViewBag.VenueId">
+                                <option value="">-- Optional: Assign Later --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                            ✨ Create Event
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventDate" class="control-label"></label>
-                <input asp-for="EventDate" class="form-control" />
-                <span asp-validation-for="EventDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="VenueId" class="control-label"></label>
-                <select asp-for="VenueId" class ="form-control" asp-items="ViewBag.VenueId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
