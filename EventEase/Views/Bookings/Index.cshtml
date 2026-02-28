@@ -1,4 +1,4 @@
-@model IEnumerable<EventEase.Models.Booking>
+﻿@model IEnumerable<EventEase.Models.Booking>
 
 @{
     ViewData["Title"] = "Index";
@@ -33,9 +33,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Venue.Location)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookingDate)
-            </td>
+                <td class="fw-bold text-primary">
+                    📅 @item.BookingDate.ToString("dd MMM yyyy")
+                </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.BookingId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.BookingId">Details</a> |

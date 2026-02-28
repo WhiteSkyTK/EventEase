@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Staff Login";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-5">
+        <div class="card border-3 p-5 text-center" style="border-radius: 30px; box-shadow: 15px 15px 0px var(--secondary-color);">
+            <h1 class="fw-bold mb-3">🔒 Staff Portal</h1>
+            <p class="text-muted mb-4">Admins & Booking Specialists only.</p>
+
+            <form>
+                <div class="mb-3 text-start">
+                    <label class="form-label fw-bold">Staff Email</label>
+                    <input type="email" class="form-control border-2" placeholder="specialist@eventease.com">
+                </div>
+                <div class="mb-4 text-start">
+                    <label class="form-label fw-bold">Password</label>
+                    <input type="password" class="form-control border-2">
+                </div>
+
+                <button type="button" class="btn btn-primary btn-lg w-100 py-3 mb-3">
+                    Let's Get Booking! ✨
+                </button>
+
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-dark fw-bold">
+                    ← Back to Public Site
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

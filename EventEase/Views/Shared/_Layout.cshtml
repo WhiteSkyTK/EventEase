@@ -29,9 +29,12 @@
                     <a class="nav-link fw-bold" asp-controller="Bookings" asp-action="Index">🎟️ Bookings</a>
                 </li>
             </ul>
-            <div class="d-flex">
-                <a href="#" class="btn btn-outline-dark btn-sm">🔒 Specialist Login</a>
-            </div>
+                        <div class="d-flex">
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-dark fw-bold"
+                               style="border-radius: 12px; box-shadow: 4px 4px 0px var(--accent-color);">
+                                🔒 Staff Entrance
+                            </a>
+                        </div>
         </div>
     </div>
 </nav>

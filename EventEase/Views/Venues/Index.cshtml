@@ -1,32 +1,38 @@
-﻿<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>Event Name</th>
-            <th>Date</th>
-            <th>Venue Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td class="fw-bold">@item.EventName</td>
-                <td>@item.EventDate.ToShortDateString()</td>
-                <td>
-                    @if (item.Venue != null)
-                    {
-                        <span class="status-badge status-confirmed">📍 @item.Venue.VenueName</span>
-                    }
-                    else
-                    {
-                        <span class="status-badge status-pending">⚠️ Venue Required</span>
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-sm btn-outline-dark">Edit</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+﻿@model IEnumerable<EventEase.Models.Venue>
+
+@{
+    ViewData["Title"] = "Venues Gallery";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold">🏟️ Our Whimsical Venues</h1>
+    <a asp-action="Create" class="btn btn-primary">+ Add New Venue</a>
+</div>
+
+<div class="row g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+            <div class="card h-100 border-3 shadow-sm" style="border-radius: 20px; overflow: hidden;">
+                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://placehold.co/600x400?text=Venue+Image" : item.ImageUrl)"
+                     class="card-img-top" style="height: 200px; object-fit: cover; border-bottom: 3px solid var(--text-color);">
+
+                <div class="card-body">
+                    <h4 class="fw-bold">@item.VenueName</h4>
+                    <p class="text-muted"><i class="bi bi-geo-alt"></i> @item.Location</p>
+
+                    <div class="mb-3">
+                        <span class="status-badge" style="background-color: @(item.Capacity > 100 ? "#4ecdc4" : "#ffcc00"); color: black;">
+                            👥 Max Capacity: @item.Capacity
+                        </span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@item.VenueId" class="btn btn-sm btn-outline-dark">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.VenueId" class="btn btn-sm btn-outline-dark">Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

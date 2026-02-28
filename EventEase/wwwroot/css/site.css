@@ -85,15 +85,16 @@ body {
 }
 
 /* Fun Form Inputs */
-.form-control {
-    border: var(--border-thickness) solid var(--text-color);
-    border-radius: 12px;
-    background-color: #fff;
+.form-control, .form-select {
+    border: 3px solid var(--text-color) !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+    font-weight: 500;
 }
 
     .form-control:focus {
-        border-color: var(--secondary-color);
-        box-shadow: 0 0 10px rgba(78, 205, 196, 0.3);
+        box-shadow: 4px 4px 0px var(--secondary-color) !important;
+        border-color: var(--text-color) !important;
     }
 
 /* Floating Table Effect */
