@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,14 +61,26 @@ namespace EventEase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BookingId,EventId,VenueId,BookingDate")] Booking booking)
         {
+            // CHECK: Is this venue already booked on this exact day?
+            var isTaken = await _context.Bookings.AnyAsync(b =>
+                b.VenueId == booking.VenueId &&
+                b.BookingDate.Date == booking.BookingDate.Date);
+
+            if (isTaken)
+            {
+                ModelState.AddModelError("", "CONFLICT: This venue is already booked for the selected date! 🛑");
+                // Re-populate dropdowns
+                ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
+                ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", booking.VenueId);
+                return View(booking);
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
-            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "Location", booking.VenueId);
             return View(booking);
         }
 

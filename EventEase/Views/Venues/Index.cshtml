@@ -1,12 +1,19 @@
-﻿@model IEnumerable<EventEase.Models.Venue>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@model IEnumerable<EventEase.Models.Venue>
 
 @{
     ViewData["Title"] = "Venues Gallery";
+    var userRole = HttpContextAccessor.HttpContext.Session.GetString("UserRole");
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="fw-bold">🏟️ Our Whimsical Venues</h1>
-    <a asp-action="Create" class="btn btn-primary">+ Add New Venue</a>
+
+    @if (userRole == "Admin")
+    {
+        <a asp-action="Create" class="btn btn-primary btn-lg">+ Add New Venue</a>
+    }
 </div>
 
 <div class="row g-4">
@@ -14,7 +21,7 @@
     {
         <div class="col-md-4">
             <div class="card h-100 border-3 shadow-sm" style="border-radius: 20px; overflow: hidden;">
-                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://placehold.co/600x400?text=Venue+Image" : item.ImageUrl)"
+                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://placehold.co/600x400?text=Venue+Coming+Soon" : item.ImageUrl)"
                      class="card-img-top" style="height: 200px; object-fit: cover; border-bottom: 3px solid var(--text-color);">
 
                 <div class="card-body">
@@ -28,8 +35,17 @@
                     </div>
 
                     <div class="d-flex gap-2">
-                        <a asp-action="Edit" asp-route-id="@item.VenueId" class="btn btn-sm btn-outline-dark">Edit</a>
                         <a asp-action="Details" asp-route-id="@item.VenueId" class="btn btn-sm btn-outline-dark">Details</a>
+
+                        @if (userRole == "Admin" || userRole == "Specialist")
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.VenueId" class="btn btn-sm btn-warning">Edit</a>
+                        }
+
+                        @if (userRole == "Admin")
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.VenueId" class="btn btn-sm btn-danger">Delete</a>
+                        }
                     </div>
                 </div>
             </div>
