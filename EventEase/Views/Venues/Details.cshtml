@@ -1,42 +1,50 @@
-@model EventEase.Models.Venue
+﻿@model EventEase.Models.Venue
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Venue Details";
 }
 
-<h1>Details</h1>
+<div class="container py-4">
+    <div class="mb-4">
+        <h1 class="fw-bold">✨ Venue Spotlight</h1>
+        <hr style="height: 5px; background-color: var(--text-color); opacity: 1;">
+    </div>
 
-<div>
-    <h4>Venue</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VenueName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VenueName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Capacity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Capacity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.VenueId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-3 shadow-sm" style="border-radius: 25px; overflow: hidden;">
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://placehold.co/600x400?text=No+Image" : Model.ImageUrl)"
+                     class="img-fluid" style="height: 400px; object-fit: cover;">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-4 bg-white border-3 shadow" style="border: 3px solid var(--text-color); border-radius: 25px; min-height: 400px;">
+                <h2 class="fw-bold mb-3">@Model.VenueName</h2>
+
+                <div class="mb-4">
+                    <label class="text-muted small text-uppercase fw-bold">Location</label>
+                    <p class="fs-4">📍 @Model.Location</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="text-muted small text-uppercase fw-bold">Guest Capacity</label>
+                    <div>
+                        <span class="badge py-2 px-3 fs-5" style="background-color: var(--secondary-color); color: black; border: 2px solid var(--text-color);">
+                            👥 @Model.Capacity Guests Max
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-5 d-flex gap-3">
+                    <a asp-action="Edit" asp-route-id="@Model.VenueId" class="btn btn-warning btn-lg fw-bold border-2 w-50" style="border-radius: 15px;">
+                        ✏️ Edit Venue
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-dark btn-lg fw-bold border-2 w-50" style="border-radius: 15px;">
+                        ⬅️ Back to Gallery
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

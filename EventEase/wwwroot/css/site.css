@@ -189,3 +189,58 @@ footer {
     background-color: rgba(255, 230, 109, 0.2) !important;
     cursor: pointer;
 }
+
+/* Styling standard action links as buttons */
+.action-links a {
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 2px solid var(--text-color);
+    transition: 0.2s;
+    display: inline-block;
+    margin: 2px;
+}
+
+/* Specific colors for common actions */
+a[asp-action="Edit"] {
+    background-color: #ffcc00;
+    color: black;
+}
+
+a[asp-action="Delete"] {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+a[asp-action="Details"], a[asp-action="Index"] {
+    background-color: #f8f9fa;
+    color: black;
+}
+
+/* Hover effects */
+.action-links a:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px var(--text-color);
+}
+
+/* Whimsical Styled Buttons */
+.btn-back-home {
+    background-color: #f0f0f0;
+    border: 3px solid #000;
+    color: #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 10px 25px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+    .btn-back-home:hover {
+        background-color: var(--accent-color);
+        transform: translate(-4px, -4px);
+        box-shadow: 6px 6px 0px #000;
+        color: #000;
+    }
