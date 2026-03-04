@@ -9,7 +9,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// 1. Add this before builder.Build()
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
+
+// 2. Add this before app.MapControllerRoute
+app.UseSession();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

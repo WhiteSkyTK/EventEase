@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,25 +20,35 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-            <ul class="navbar-nav flex-grow-1">
-                <li class="nav-item">
-                    <a class="nav-link fw-bold" asp-controller="Venues" asp-action="Index">🏟️ Venues</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold" asp-controller="Events" asp-action="Index">📅 Events</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold" asp-controller="Bookings" asp-action="Index">🎟️ Bookings</a>
-                </li>
-            </ul>
-                        <div class="d-flex">
-                            <a asp-controller="Account" asp-action="Login" class="btn btn-dark fw-bold"
-                               style="border-radius: 12px; box-shadow: 4px 4px 0px var(--accent-color);">
-                                🔒 Staff Entrance
-                            </a>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Venues" asp-action="Index">🏟️ Venues</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Events" asp-action="Index">📅 Events</a>
+                            </li>
+
+                            @if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") != null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link fw-bold text-primary" asp-controller="Bookings" asp-action="Index">🎟️ Bookings</a>
+                                </li>
+                            }
+                        </ul>
+
+                        <div class="d-flex align-items-center">
+                            @if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") != null)
+                            {
+                                <span class="me-3 badge bg-dark">👤 @HttpContextAccessor.HttpContext.Session.GetString("UserRole")</span>
+                                <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger btn-sm">Logout</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-dark fw-bold">🔒 Staff Entrance</a>
+                            }
                         </div>
-        </div>
+                    </div>
     </div>
 </nav>
     </header>
