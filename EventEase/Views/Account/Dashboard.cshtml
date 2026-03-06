@@ -6,6 +6,7 @@
 }
 
 <div class="py-4">
+
     <div class="p-5 mb-4 bg-dark text-white shadow-lg" style="border-radius: 30px; border: 4px solid var(--secondary-color);">
         <h1 class="display-5 fw-bold">Welcome back, @userRole! 🛠️</h1>
         <p class="col-md-8 fs-4">EventEase Management Portal — 2026 Edition</p>
@@ -56,5 +57,28 @@
                 </div>
             </div>
         </div>
+
+
+        @if (userRole == "Admin")
+        {
+            <div class="mt-5">
+                <h2 class="fw-bold mb-3">📈 Admin Insights</h2>
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="p-3 border-3 text-center" style="background: #e7f3ff; border: 3px solid #000; border-radius: 20px;">
+                            <h5 class="text-muted">Total Venues</h5>
+                            <h2 class="fw-bold">@ViewBag.VenueCount</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 border-3 text-center" style="background: #fff0f0; border: 3px solid #000; border-radius: 20px;">
+                            <h5 class="text-muted">Total Bookings</h5>
+                            <h2 class="fw-bold">@ViewBag.BookingCount</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
     </div>
 </div>

@@ -50,5 +50,13 @@ namespace EventEase.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult StaffList()
+        {
+            if (HttpContext.Session.GetString("UserRole") != "Admin") return RedirectToAction("Login");
+
+            var staff = _context.Staff.ToList();
+            return View(staff);
+        }
     }
 }

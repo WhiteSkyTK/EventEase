@@ -54,6 +54,21 @@ namespace EventEase.Controllers
             return View();
         }
 
+        /*
+         
+        // Example for VenuesController Create action
+        public IActionResult Create()
+        {
+            var role = HttpContext.Session.GetString("UserRole");
+            if (role != "Admin")
+            {
+                // Kick them out if they aren't an Admin!
+                return RedirectToAction("Index", "Home"); 
+            }
+            return View();
+        }
+         */
+
         // POST: Events/Create
         [HttpPost]
         [ValidateAntiForgeryToken]

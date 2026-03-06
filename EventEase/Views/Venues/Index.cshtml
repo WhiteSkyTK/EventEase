@@ -50,5 +50,11 @@
                 </div>
             </div>
         </div>
+        @if (userRole == "Admin" && item.Capacity < 20)
+        {
+            <div class="alert alert-warning py-1 mt-2 small border-2" style="border-radius: 10px;">
+                ⚠️ Small Capacity Venue
+            </div>
+        }
     }
 </div>

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<EventEase.Models.Staff>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">👥 Team Management</h1>
+        <button class="btn btn-primary border-3 fw-bold" style="border-radius: 12px;">+ Add New Staff</button>
+    </div>
+
+    <div class="table-responsive border-3 shadow" style="border: 3px solid #000; border-radius: 20px; background: white;">
+        <table class="table table-hover mb-0">
+            <thead class="bg-warning">
+                <tr>
+                    <th class="ps-4">Email Address</th>
+                    <th>Role</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var person in Model)
+                {
+                    <tr style="vertical-align: middle;">
+                        <td class="ps-4 fw-bold">@person.Email</td>
+                        <td>
+                            <span class="badge @(person.Role == "Admin" ? "bg-danger" : "bg-info text-dark") border">
+                                @person.Role
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-dark">Reset Password</button>
+                            @if (person.Role != "Admin")
+                            {
+                                <button class="btn btn-sm btn-danger">Remove</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

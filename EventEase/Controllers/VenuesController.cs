@@ -46,6 +46,12 @@ namespace EventEase.Controllers
         // GET: Venues/Create
         public IActionResult Create()
         {
+            var role = HttpContext.Session.GetString("UserRole");
+            if (role != "Admin")
+            {
+                // Kick them out if they aren't an Admin!
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
