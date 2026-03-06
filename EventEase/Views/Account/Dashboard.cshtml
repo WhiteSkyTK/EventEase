@@ -1,0 +1,60 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Staff Dashboard";
+    var userRole = HttpContextAccessor.HttpContext.Session.GetString("UserRole");
+}
+
+<div class="py-4">
+    <div class="p-5 mb-4 bg-dark text-white shadow-lg" style="border-radius: 30px; border: 4px solid var(--secondary-color);">
+        <h1 class="display-5 fw-bold">Welcome back, @userRole! 🛠️</h1>
+        <p class="col-md-8 fs-4">EventEase Management Portal — 2026 Edition</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-3 shadow-sm p-3">
+                <div class="card-body">
+                    <h3 class="fw-bold">🎟️ Bookings</h3>
+                    <p>Manage reservations and client requests.</p>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Bookings" asp-action="Index" class="btn btn-primary">View All Bookings</a>
+                        <a asp-controller="Bookings" asp-action="Create" class="btn btn-outline-dark">+ New Reservation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-3 shadow-sm p-3">
+                <div class="card-body">
+                    <h3 class="fw-bold">🏟️ Venues</h3>
+                    <p>Update venue details and capacity.</p>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Venues" asp-action="Index" class="btn btn-primary">Manage Venues</a>
+                        @if (userRole == "Admin")
+                        {
+                            <a asp-controller="Venues" asp-action="Create" class="btn btn-outline-dark">+ Add New Venue</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-3 shadow-sm p-3">
+                <div class="card-body">
+                    <h3 class="fw-bold">📅 Events</h3>
+                    <p>Coordinate upcoming themes and schedules.</p>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Events" asp-action="Index" class="btn btn-primary">View Schedule</a>
+                        @if (userRole == "Admin")
+                        {
+                            <a asp-controller="Events" asp-action="Create" class="btn btn-outline-dark">+ Create Event Type</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
