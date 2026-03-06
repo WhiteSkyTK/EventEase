@@ -28,10 +28,20 @@ namespace EventEase.Controllers
                 HttpContext.Session.SetString("UserRole", user.Role);
                 HttpContext.Session.SetString("UserEmail", user.Email);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Dashboard", "Account");
             }
 
             ViewBag.Error = "Invalid Login Credentials! ❌";
+            return View();
+        }
+
+        public IActionResult Dashboard()
+        {
+            // Security check: If someone tries to go to /Account/Dashboard without logging in
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserRole")))
+            {
+                return RedirectToAction("Login");
+            }
             return View();
         }
 

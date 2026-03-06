@@ -1,47 +1,38 @@
 ﻿@model IEnumerable<EventEase.Models.Booking>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "All Bookings";
 }
 
-<h1>Index</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold">🎟️ Master Booking List</h1>
+    <a asp-action="Create" class="btn btn-dark fw-bold border-3">+ Create New Reservation</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Event)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Venue)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BookingDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Event.EventName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Venue.Location)
-            </td>
-                <td class="fw-bold text-primary">
-                    📅 @item.BookingDate.ToString("dd MMM yyyy")
-                </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BookingId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BookingId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BookingId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="table-responsive bg-white border-3 shadow" style="border: 3px solid #000; border-radius: 20px;">
+    <table class="table table-hover mb-0">
+        <thead class="bg-primary text-white">
+            <tr>
+                <th class="ps-4">Booking ID</th>
+                <th>Event Type</th>
+                <th>Venue Name</th>
+                <th>Date</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="vertical-align: middle;">
+                    <td class="ps-4 fw-bold">#EE-@item.BookingId</td>
+                    <td>@item.Event.EventName</td>
+                    <td>@item.Venue.VenueName</td>
+                    <td><span class="badge bg-light text-dark border">@item.BookingDate.ToShortDateString()</span></td>
+                    <td class="text-center">
+                        <a asp-action="Edit" asp-route-id="@item.BookingId" class="btn btn-sm btn-warning">Update</a>
+                        <a asp-action="Details" asp-route-id="@item.BookingId" class="btn btn-sm btn-outline-dark">Info</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

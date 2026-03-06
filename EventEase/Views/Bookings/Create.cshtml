@@ -1,46 +1,77 @@
-@model EventEase.Models.Booking
+﻿@model EventEase.Models.Booking
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "New Reservation";
 }
 
-<h1>Create</h1>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold">🎟️ Create New Booking</h1>
+            <p class="text-muted">Fill in the details below to reserve a venue.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark fw-bold border-3 shadow-sm" style="border-radius: 12px;">
+            🏠 Return to Public Site
+        </a>
+    </div>
 
-<h4>Booking</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="EventId" class="control-label"></label>
-                <select asp-for="EventId" class ="form-control" asp-items="ViewBag.EventId"></select>
+    <hr class="border-3 opacity-100 mb-5">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-3 p-4 shadow" style="border-radius: 25px; border: 3px solid #000;">
+                <form asp-action="Create" id="bookingForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger fw-bold mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="EventId" class="form-label fw-bold">Select Event Type</label>
+                        <select asp-for="EventId" class="form-select border-2" asp-items="ViewBag.EventId" style="border-radius: 10px;"></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="VenueId" class="form-label fw-bold">Select Venue</label>
+                        <select asp-for="VenueId" class="form-select border-2" asp-items="ViewBag.VenueId" style="border-radius: 10px;"></select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="BookingDate" class="form-label fw-bold">Reservation Date</label>
+                        <input asp-for="BookingDate" type="date" class="form-control border-2" style="border-radius: 10px;" />
+                        <span asp-validation-for="BookingDate" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm" style="border-radius: 15px;">
+                            ✨ Confirm Reservation
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary fw-bold mt-2" style="border-radius: 12px;">
+                            ⬅️ Back to Booking List
+                        </a>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="VenueId" class="control-label"></label>
-                <select asp-for="VenueId" class ="form-control" asp-items="ViewBag.VenueId"></select>
+        </div>
+
+        <div class="col-md-5 offset-md-1">
+            <div class="p-4 bg-light border-3 h-100" style="border: 3px dashed #000; border-radius: 25px;">
+                <h4 class="fw-bold">💡 Specialist Tip</h4>
+                <p>Ensure you have verified the client's guest count against the <b>Venue Capacity</b> before confirming.</p>
+                <ul class="text-muted">
+                    <li>Double-check for public holidays.</li>
+                    <li>Verify setup time with the venue manager.</li>
+                </ul>
             </div>
-            <div class="form-group">
-                <label asp-for="BookingDate" class="control-label"></label>
-                <input asp-for="BookingDate" class="form-control" />
-                <span asp-validation-for="BookingDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     <script>
         // Simple JS to remind specialists to check dates
-        document.querySelector('form').addEventListener('submit', function(e) {
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
             const confirmed = confirm("Specialist Check: Have you verified there are no conflicts for this date in the physical log?");
             if (!confirmed) {
                 e.preventDefault();

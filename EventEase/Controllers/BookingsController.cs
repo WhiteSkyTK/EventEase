@@ -61,15 +61,16 @@ namespace EventEase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BookingId,EventId,VenueId,BookingDate")] Booking booking)
         {
-            // CHECK: Is this venue already booked on this exact day?
-            var isTaken = await _context.Bookings.AnyAsync(b =>
-                b.VenueId == booking.VenueId &&
-                b.BookingDate.Date == booking.BookingDate.Date);
+            // 1. CHECK FOR DOUBLE BOOKING
+            var alreadyBooked = await _context.Bookings
+                .AnyAsync(b => b.VenueId == booking.VenueId && b.BookingDate.Date == booking.BookingDate.Date);
 
-            if (isTaken)
+            if (alreadyBooked)
             {
-                ModelState.AddModelError("", "CONFLICT: This venue is already booked for the selected date! 🛑");
-                // Re-populate dropdowns
+                // Add a friendly but firm error message
+                ModelState.AddModelError("BookingDate", "🛑 CONFLICT: This venue is already reserved for this date. Please pick another spot or time.");
+
+                // Re-load the dropdowns so the page doesn't crash
                 ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
                 ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", booking.VenueId);
                 return View(booking);
