@@ -1,0 +1,54 @@
+﻿@model EventEase.Models.Staff
+
+@{
+    ViewData["Title"] = "Add New Staff";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-3 shadow-lg p-4" style="border: 3px solid #000; border-radius: 25px;">
+                <div class="text-center mb-4">
+                    <h1 class="fw-bold">🤝 Grow the Team</h1>
+                    <p class="text-muted">Create a new login for an Admin or Specialist.</p>
+                </div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger fw-bold border-2">@ViewBag.Error</div>
+                }
+
+                <form asp-action="AddStaff">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email Address</label>
+                        <input asp-for="Email" class="form-control border-2" placeholder="name@eventease.com" required />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Temp Password</label>
+                        <input asp-for="Password" type="password" class="form-control border-2" required />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Assign Role</label>
+                        <select asp-for="Role" class="form-select border-2">
+                            <option value="Specialist">Booking Specialist</option>
+                            <option value="Admin">System Administrator</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm" style="border-radius: 15px;">
+                            ✅ Create Staff Account
+                        </button>
+                        <a asp-action="StaffList" class="btn btn-outline-dark fw-bold" style="border-radius: 15px;">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

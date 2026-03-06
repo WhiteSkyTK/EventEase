@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using EventEase.Data;
+﻿using EventEase.Data;
+using EventEase.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EventEase.Controllers
 {
@@ -56,6 +57,41 @@ namespace EventEase.Controllers
             if (HttpContext.Session.GetString("UserRole") != "Admin") return RedirectToAction("Login");
 
             var staff = _context.Staff.ToList();
+            return View(staff);
+        }
+
+        // GET: Account/AddStaff
+        public IActionResult AddStaff()
+        {
+            // Security Bouncer: Only Admins allowed
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+                return RedirectToAction("Index", "Home");
+
+            return View();
+        }
+
+        // POST: Account/AddStaff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddStaff(Staff staff)
+        {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+                return RedirectToAction("Index", "Home");
+
+            if (ModelState.IsValid)
+            {
+                // Check if the email is already taken
+                var exists = _context.Staff.Any(s => s.Email == staff.Email);
+                if (exists)
+                {
+                    ViewBag.Error = "This email is already registered to a staff member! 🛑";
+                    return View(staff);
+                }
+
+                _context.Add(staff);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("StaffList");
+            }
             return View(staff);
         }
     }
