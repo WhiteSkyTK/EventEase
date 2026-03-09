@@ -15,17 +15,22 @@ namespace EventEase.Models
 
         public string Description { get; set; }
 
+        // CEO Requirement: Start and End Dates/Times
         [Required]
-        [DataType(DataType.Date)]
-        public DateTime EventDate { get; set; }
+        [Display(Name = "Start Date & Time")]
+        public DateTime StartDateTime { get; set; }
+
+        [Required]
+        [Display(Name = "End Date & Time")]
+        public DateTime EndDateTime { get; set; }
 
         // Nullable because events can be loaded before a venue is assigned
         public int? VenueId { get; set; }
 
         [ForeignKey("VenueId")]
-        public Venue Venue { get; set; }
+        public virtual Venue? Venue { get; set; }
 
         // Navigation property
-        public ICollection<Booking> Bookings { get; set; }
+        public virtual ICollection<Booking>? Bookings { get; set; }
     }
 }

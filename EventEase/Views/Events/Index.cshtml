@@ -8,16 +8,16 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="fw-bold">📅 Scheduled Events</h1>
-        <p class="text-muted">Check availability and upcoming whimsical gatherings.</p>
-    </div>
-
+    <h1 class="fw-bold">📅 Scheduled Events</h1>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger border-3 shadow-sm mb-4" style="border-radius: 15px; border: 2px solid #000;">
+            <strong>@TempData["Error"]</strong>
+        </div>
+    }
     @if (userRole == "Admin")
     {
-        <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm" style="border-radius: 15px;">
-            ✨ Schedule New Event
-        </a>
+        <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm" style="border-radius: 15px; border: 3px solid #000;">✨ Schedule New Event</a>
     }
 </div>
 
@@ -26,50 +26,41 @@
         <table class="table table-hover mb-0">
             <thead class="bg-dark text-white">
                 <tr>
-                    <th class="ps-4">Event Name</th>
-                    <th>Description</th>
-                    <th>Date & Time</th>
-                    <th>Venue Location</th>
+                    <th class="ps-4">Event</th>
+                    <th>Date</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @if (Model != null && Model.Any())
                 {
-                    <tr style="vertical-align: middle;">
-                        <td class="ps-4 fw-bold">@item.EventName</td>
-                        <td>@item.Description</td>
-                        <td>
-                            <span class="badge bg-light text-dark border-2 border">
-                                🕒 @item.EventDate.ToString("f")
-                            </span>
-                        </td>
-                        <td>
-                            <i class="bi bi-geo-alt-fill text-danger"></i>
-                            @(item.Venue != null ? item.Venue.Location : "TBA")
-                        </td>
-                        <td class="text-center">
-                            <div class="btn-group gap-2">
-                                <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-sm btn-outline-dark">View</a>
-
-                                @if (userRole == "Admin" || userRole == "Specialist")
-                                {
-                                    <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-sm btn-warning">Edit</a>
-                                }
-
-                                @if (userRole == "Admin")
-                                {
-                                    <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-sm btn-danger">Delete</a>
-                                }
-                            </div>
-                        </td>
-                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="vertical-align: middle;">
+                            <td class="ps-4 fw-bold">@item.EventName</td>
+                            <td>@item.StartDateTime.ToShortDateString()</td>
+                            <td class="text-center">
+                                <div class="btn-group gap-2">
+                                    <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-sm btn-outline-dark fw-bold">View</a>
+                                    @if (userRole == "Admin")
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-sm btn-warning fw-bold border-2 border-dark">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-sm btn-danger fw-bold border-2 border-dark">Delete</a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 }
-                @if (!Model.Any())
+                else
                 {
                     <tr>
                         <td colspan="5" class="text-center py-5">
-                            <h4 class="text-muted">No events scheduled yet. 🎈</h4>
+                            <div class="py-4">
+                                <h2 class="display-1">🎈</h2>
+                                <h4 class="text-muted fw-bold">No events scheduled yet.</h4>
+                                <p>Why not start by scheduling a whimsical gathering?</p>
+                            </div>
                         </td>
                     </tr>
                 }

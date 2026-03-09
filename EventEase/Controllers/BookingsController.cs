@@ -19,61 +19,55 @@ namespace EventEase.Controllers
             _context = context;
         }
 
-        // GET: Bookings
+        private bool IsStaff()
+        {
+            var role = HttpContext.Session.GetString("UserRole");
+            return role == "Admin" || role == "Specialist";
+        }
+
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Bookings.Include(b => b.Event).Include(b => b.Venue);
-            return View(await applicationDbContext.ToListAsync());
+            if (!IsStaff()) return RedirectToAction("Login", "Account");
+            var bookings = _context.Bookings.Include(b => b.Event).Include(b => b.Venue);
+            return View(await bookings.ToListAsync());
         }
 
-        // GET: Bookings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var booking = await _context.Bookings
-                .Include(b => b.Event)
-                .Include(b => b.Venue)
+            if (!IsStaff()) return RedirectToAction("Login", "Account");
+            if (id == null) return NotFound();
+            var booking = await _context.Bookings.Include(b => b.Event).Include(b => b.Venue)
                 .FirstOrDefaultAsync(m => m.BookingId == id);
-            if (booking == null)
-            {
-                return NotFound();
-            }
-
-            return View(booking);
+            return booking == null ? NotFound() : View(booking);
         }
 
-        // GET: Bookings/Create
         public IActionResult Create()
         {
+            if (!IsStaff()) return RedirectToAction("Index", "Home");
             ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName");
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "Location");
             return View();
         }
 
         // POST: Bookings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BookingId,EventId,VenueId,BookingDate")] Booking booking)
         {
-            // 1. CHECK FOR DOUBLE BOOKING
+            var role = HttpContext.Session.GetString("UserRole");
+            if (string.IsNullOrEmpty(role)) return RedirectToAction("Login", "Account");
+
+            // FIX: Ignore the "Event" and "Venue" objects during validation
+            ModelState.Remove("Event");
+            ModelState.Remove("Venue");
+
+            // 1. Double Booking Check
             var alreadyBooked = await _context.Bookings
                 .AnyAsync(b => b.VenueId == booking.VenueId && b.BookingDate.Date == booking.BookingDate.Date);
 
             if (alreadyBooked)
             {
-                // Add a friendly but firm error message
-                ModelState.AddModelError("BookingDate", "🛑 CONFLICT: This venue is already reserved for this date. Please pick another spot or time.");
-
-                // Re-load the dropdowns so the page doesn't crash
-                ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
-                ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", booking.VenueId);
-                return View(booking);
+                ModelState.AddModelError("BookingDate", "🛑 Venue is already booked for this date!");
             }
 
             if (ModelState.IsValid)
@@ -82,6 +76,10 @@ namespace EventEase.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // IF WE FAIL: We MUST reload the lists or the page breaks
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", booking.VenueId);
             return View(booking);
         }
 
@@ -104,16 +102,15 @@ namespace EventEase.Controllers
         }
 
         // POST: Bookings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BookingId,EventId,VenueId,BookingDate")] Booking booking)
         {
-            if (id != booking.BookingId)
-            {
-                return NotFound();
-            }
+            if (id != booking.BookingId) return NotFound();
+
+            // REMOVE validation for Event and Venue objects so the update can proceed
+            ModelState.Remove("Event");
+            ModelState.Remove("Venue");
 
             if (ModelState.IsValid)
             {
@@ -121,20 +118,16 @@ namespace EventEase.Controllers
                 {
                     _context.Update(booking);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookingExists(booking.BookingId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!_context.Bookings.Any(e => e.BookingId == booking.BookingId)) return NotFound();
+                    else throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
+
+            // If we got here, something failed; reload the dropdowns
             ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "Location", booking.VenueId);
             return View(booking);

@@ -1,5 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
+@{
+    var userRole = HttpContextAccessor.HttpContext.Session.GetString("UserRole");
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,14 +17,21 @@
 <body>
     <div class="container-wrapper">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom border-3 mb-3" style="border-color: var(--text-color) !important;">
-    <div class="container-fluid">
-        <a class="navbar-brand" asp-controller="Home" asp-action="Index">✨ EventEase</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom border-3 mb-3" style="border-color: var(--text-color) !important;">
+                <div class="container-fluid">
+                    <a class="navbar-brand fw-bold" asp-controller="@(userRole != null ? "Account" : "Home")" asp-action="@(userRole != null ? "Dashboard" : "Index")">
+                        ✨ EventEase
+                    </a>
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">🏠 Home</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Venues" asp-action="Index">🏟️ Venues</a>
                             </li>
@@ -29,7 +39,7 @@
                                 <a class="nav-link" asp-controller="Events" asp-action="Index">📅 Events</a>
                             </li>
 
-                            @if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") != null)
+                            @if (userRole != null)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link fw-bold text-primary" asp-controller="Bookings" asp-action="Index">🎟️ Bookings</a>
@@ -38,28 +48,29 @@
                         </ul>
 
                         <div class="d-flex align-items-center">
-                            @if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") != null)
+                            @if (userRole != null)
                             {
                                 <div class="dropdown">
-                                    <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                        👤 @HttpContextAccessor.HttpContext.Session.GetString("UserRole")
+                                    <button class="btn btn-dark dropdown-toggle border-2" type="button" data-bs-toggle="dropdown" style="border-radius: 12px;">
+                                        👤 @userRole
                                     </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-3">
+                                        <li><a class="dropdown-item fw-bold" asp-controller="Account" asp-action="Dashboard">📊 Dashboard</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger fw-bold" asp-controller="Account" asp-action="Logout">Logout</a></li>
                                     </ul>
                                 </div>
                             }
                             else
                             {
-                                <a asp-controller="Account" asp-action="Login" class="btn btn-dark fw-bold"
-                                   style="background: #000; color: #fff; border-radius: 50px; padding: 10px 25px;">
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-dark fw-bold" style="border-radius: 50px; padding: 10px 25px;">
                                     🔒 Staff Entrance
                                 </a>
                             }
                         </div>
                     </div>
-    </div>
-</nav>
+                </div>
+            </nav>
     </header>
         <main role="main" class="pb-3 container">
             @RenderBody()

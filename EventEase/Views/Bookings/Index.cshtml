@@ -1,6 +1,11 @@
 ﻿@model IEnumerable<EventEase.Models.Booking>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "All Bookings";
+    // Define the userRole variable here so the page knows what it is!
+    var userRole = HttpContextAccessor.HttpContext.Session.GetString("UserRole");
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -20,16 +25,34 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @if (Model != null && Model.Any())
             {
-                <tr style="vertical-align: middle;">
-                    <td class="ps-4 fw-bold">#EE-@item.BookingId</td>
-                    <td>@item.Event.EventName</td>
-                    <td>@item.Venue.VenueName</td>
-                    <td><span class="badge bg-light text-dark border">@item.BookingDate.ToShortDateString()</span></td>
-                    <td class="text-center">
-                        <a asp-action="Edit" asp-route-id="@item.BookingId" class="btn btn-sm btn-warning">Update</a>
-                        <a asp-action="Details" asp-route-id="@item.BookingId" class="btn btn-sm btn-outline-dark">Info</a>
+                @foreach (var item in Model)
+                {
+                    <tr style="vertical-align: middle;">
+                        <td class="ps-4 fw-bold">#EE-@item.BookingId</td>
+                        <td>@item.Event.EventName</td>
+                        <td>@item.Venue.VenueName</td>
+                        <td><span class="badge bg-light text-dark border">@item.BookingDate.ToShortDateString()</span></td>
+                        <td class="text-center">
+                            <div class="btn-group gap-2">
+                                <a asp-action="Details" asp-route-id="@item.BookingId" class="btn btn-sm btn-outline-dark fw-bold">View</a>
+
+                                @if (userRole == "Admin" || userRole == "Specialist")
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.BookingId" class="btn btn-sm btn-warning fw-bold border-2 border-dark">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.BookingId" class="btn btn-sm btn-danger fw-bold border-2 border-dark">Delete</a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted fw-bold">
+                        No bookings found.
                     </td>
                 </tr>
             }

@@ -1,4 +1,4 @@
-@model EventEase.Models.Venue
+﻿@model EventEase.Models.Venue
 
 @{
     ViewData["Title"] = "Edit";
@@ -40,8 +40,10 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-outline-dark fw-bold border-3 shadow-sm px-4" style="border-radius: 12px;">
+        ⬅️ Return to List
+    </a>
 </div>
 
 @section Scripts {

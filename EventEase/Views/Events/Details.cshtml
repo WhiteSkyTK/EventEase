@@ -1,42 +1,61 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 @model EventEase.Models.Event
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Event Details";
+    var userRole = HttpContextAccessor.HttpContext.Session.GetString("UserRole");
 }
 
-<h1>Details</h1>
+<div class="container py-5">
+    <div class="card border-3 shadow-lg" style="border: 4px solid #000; border-radius: 30px; overflow: hidden;">
+        <div class="bg-primary text-white p-4 text-center">
+            <h1 class="fw-bold mb-0">🎫 Event Information</h1>
+        </div>
 
-<div>
-    <h4>Event</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EventName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EventName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EventDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EventDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Venue)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Venue.Location)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.EventId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+        <div class="card-body p-5">
+            <h2 class="display-6 fw-bold text-center mb-4">@Model.EventName</h2>
+
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="p-3 bg-light border-2 rounded-4" style="border: 2px solid #000;">
+                        <p class="text-muted mb-1 fw-bold">STARTS</p>
+                        <h5 class="fw-bold">📅 @Model.StartDateTime.ToString("f")</h5>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light border-2 rounded-4" style="border: 2px solid #000;">
+                        <p class="text-muted mb-1 fw-bold">ENDS</p>
+                        <h5 class="fw-bold">⌛ @Model.EndDateTime.ToString("f")</h5>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light border-2 rounded-4" style="border: 2px solid #000;">
+                        <p class="text-muted mb-1 fw-bold">LOCATION</p>
+                        <h5 class="fw-bold">📍 @(Model.Venue?.VenueName ?? "TBA")</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <h5 class="fw-bold">Description</h5>
+                <p class="fs-5 p-3 border-start border-4 border-primary bg-light">@Model.Description</p>
+            </div>
+
+                    <div class="mt-5 d-flex gap-3">
+                        @if (userRole == "Admin")
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.EventId" class="btn btn-warning btn-lg fw-bold w-50 border-2 border-dark" style="border-radius: 15px;">
+                                ✏️ Modify Event
+                            </a>
+                        }
+
+                        <a asp-action="Index" class="btn btn-dark btn-lg fw-bold @(userRole == "Admin" ? "w-50" : "w-100")" style="border-radius: 15px;">
+                            ⬅️ Back to Schedule
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -9,10 +9,15 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="fw-bold">🏟️ Our Whimsical Venues</h1>
-
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger border-3 shadow-sm mb-4" style="border-radius: 15px; border: 2px solid #000;">
+            <strong>@TempData["Error"]</strong>
+        </div>
+    }
     @if (userRole == "Admin")
     {
-        <a asp-action="Create" class="btn btn-primary btn-lg">+ Add New Venue</a>
+        <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm" style="border-radius: 15px; border: 3px solid #000;">+ Add New Venue</a>
     }
 </div>
 
@@ -21,40 +26,20 @@
     {
         <div class="col-md-4">
             <div class="card h-100 border-3 shadow-sm" style="border-radius: 20px; overflow: hidden;">
-                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://placehold.co/600x400?text=Venue+Coming+Soon" : item.ImageUrl)"
-                     class="card-img-top" style="height: 200px; object-fit: cover; border-bottom: 3px solid var(--text-color);">
-
+                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://placehold.co/600x400?text=Venue+Coming+Soon" : item.ImageUrl)" class="card-img-top" style="height: 200px; object-fit: cover; border-bottom: 3px solid #000;">
                 <div class="card-body">
                     <h4 class="fw-bold">@item.VenueName</h4>
-                    <p class="text-muted"><i class="bi bi-geo-alt"></i> @item.Location</p>
-
-                    <div class="mb-3">
-                        <span class="status-badge" style="background-color: @(item.Capacity > 100 ? "#4ecdc4" : "#ffcc00"); color: black;">
-                            👥 Max Capacity: @item.Capacity
-                        </span>
-                    </div>
-
+                    <p class="text-muted">📍 @item.Location</p>
                     <div class="d-flex gap-2">
-                        <a asp-action="Details" asp-route-id="@item.VenueId" class="btn btn-sm btn-outline-dark">Details</a>
-
-                        @if (userRole == "Admin" || userRole == "Specialist")
-                        {
-                            <a asp-action="Edit" asp-route-id="@item.VenueId" class="btn btn-sm btn-warning">Edit</a>
-                        }
-
+                        <a asp-action="Details" asp-route-id="@item.VenueId" class="btn btn-sm btn-outline-dark fw-bold">Details</a>
                         @if (userRole == "Admin")
                         {
-                            <a asp-action="Delete" asp-route-id="@item.VenueId" class="btn btn-sm btn-danger">Delete</a>
+                            <a asp-action="Edit" asp-route-id="@item.VenueId" class="btn btn-sm btn-warning fw-bold border-2 border-dark">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.VenueId" class="btn btn-sm btn-danger fw-bold border-2 border-dark">Delete</a>
                         }
                     </div>
                 </div>
             </div>
         </div>
-        @if (userRole == "Admin" && item.Capacity < 20)
-        {
-            <div class="alert alert-warning py-1 mt-2 small border-2" style="border-radius: 10px;">
-                ⚠️ Small Capacity Venue
-            </div>
-        }
     }
 </div>

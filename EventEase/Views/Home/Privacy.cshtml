@@ -1,6 +1,32 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-5">
+    <div class="card border-3 shadow-lg" style="border-radius: 30px; border: 4px solid #000;">
+        <div class="card-header bg-dark text-white p-4" style="border-radius: 25px 25px 0 0;">
+            <h1 class="fw-bold mb-0">🛡️ @ViewData["Title"]</h1>
+        </div>
+        <div class="card-body p-5">
+            <p class="lead fw-bold">Your privacy is important to the EventEase team.</p>
+            <p>At EventEase Portal (2026), we ensure that your data is handled with the highest security standards provided by Azure Cloud services.</p>
+
+            <div class="mt-4 p-3 bg-light border-2" style="border-left: 5px solid var(--accent-color); border-radius: 10px;">
+                <h5 class="fw-bold">What we collect:</h5>
+                <ul>
+                    <li>Staff credentials for portal management.</li>
+                    <li>Event scheduling details and venue availability.</li>
+                    <li>Technical logs for cloud performance monitoring.</li>
+                </ul>
+            </div>
+
+            <p class="mt-4 text-muted italic">This policy is updated annually to comply with ICT Faculty regulations.</p>
+
+            <div class="mt-5">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark fw-bold px-4" style="border-radius: 15px;">
+                    🏠 Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
