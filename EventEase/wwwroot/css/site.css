@@ -1,12 +1,6 @@
 /* Import a Whimsical Font */
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
 
-html, body {
-    height: 100% !important;
-    margin: 0;
-    padding: 0;
-}
-
 :root {
     --primary-color: #ff6b6b; /* Playful Pink/Red */
     --secondary-color: #4ecdc4; /* Minty Green */
@@ -16,11 +10,16 @@ html, body {
     --border-thickness: 3px;
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100%;
-    margin-bottom: 0; /* Remove the old margin-bottom */
+    min-height: 100vh; /* Changed to vh to fix the zoom/scroll issue */
     background-color: var(--bg-color);
     font-family: 'Fredoka', sans-serif;
 }
@@ -142,6 +141,7 @@ textarea.form-control {
 
 /* Page spacing */
 .container {
+    flex: 1 0 auto;
     padding-top: 20px;
     padding-bottom: 50px;
 }
@@ -153,8 +153,13 @@ textarea.form-control {
 }
 
 footer {
-    flex-shrink: 0; /* Prevents the footer from squishing */
+    flex-shrink: 0;
     width: 100%;
+    margin-top: auto; /* This acts as a magnet pulling it to the bottom */
+    background-color: white;
+    border-top: var(--border-thickness) solid var(--text-color);
+    padding: 15px 0;
+    box-shadow: 0px -5px 0px rgba(78, 205, 196, 0.2); /* Fun upward shadow */
 }
 
 /* Status Badges */
@@ -243,4 +248,52 @@ a[asp-action="Details"], a[asp-action="Index"] {
         transform: translate(-4px, -4px);
         box-shadow: 6px 6px 0px #000;
         color: #000;
+    }
+
+/* --- WHIMSICAL ANIMATIONS (Add to the bottom of your CSS file) --- */
+@keyframes wiggle {
+    0%, 100% {
+        transform: rotate(0deg) translate(-2px, -2px);
+    }
+
+    25% {
+        transform: rotate(-3deg) translate(-2px, -2px);
+    }
+
+    50% {
+        transform: rotate(3deg) translate(-2px, -2px);
+    }
+
+    75% {
+        transform: rotate(-3deg) translate(-2px, -2px);
+    }
+}
+
+.btn:hover, .action-links a:hover {
+    animation: wiggle 0.4s ease-in-out;
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.table tbody tr {
+    animation: popIn 0.4s ease-out forwards;
+    opacity: 0;
+}
+
+    .table tbody tr:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .table tbody tr:nth-child(2) {
+        animation-delay: 0.2s;
     }
