@@ -7,32 +7,56 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EventEase.Data;
 using EventEase.Models;
+using EventEase.Services;
 
 namespace EventEase.Controllers
 {
     public class EventsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public EventsController(ApplicationDbContext context) { _context = context; }
+        private readonly IBlobService _blobService;
+        public EventsController(ApplicationDbContext context, IBlobService blobService)
+        {
+            _context = context;
+            _blobService = blobService;
+        }
 
         private bool IsAdmin() => HttpContext.Session.GetString("UserRole") == "Admin";
 
-        public async Task<IActionResult> Index() => View(await _context.Events.Include(e => e.Venue).ToListAsync());
+        public async Task<IActionResult> Index(string searchString)
+        {
+            ViewData["CurrentFilter"] = searchString;
+            var events = from e in _context.Events.Include(e => e.Venue) select e;
 
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                events = events.Where(s => s.EventName.Contains(searchString));
+            }
+
+            return View(await events.ToListAsync());
+        }
+
+        // GET: Events/Create
         public IActionResult Create()
         {
             if (!IsAdmin()) return RedirectToAction("Index", "Home");
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName");
-            return View();
+            return View(new Event()); // Fix: Pass empty object to prevent NullRef in view
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EventId,EventName,Description,StartDateTime,EndDateTime,VenueId")] Event eventItem)
+        public async Task<IActionResult> Create([Bind("EventId,EventName,Description,StartDateTime,EndDateTime,VenueId,ImageUrl")] Event eventItem, IFormFile? imageFile)
         {
             if (!IsAdmin()) return RedirectToAction("Index", "Home");
 
-            // CEO REQUIREMENT: Prevent Double Bookings
+            // 1. Handle Image Upload
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                eventItem.ImageUrl = await _blobService.UploadImageAsync(imageFile, "event-images");
+            }
+
+            // 2. Prevent Double Bookings
             bool isDoubleBooked = await _context.Events.AnyAsync(e =>
                 e.VenueId == eventItem.VenueId &&
                 eventItem.StartDateTime < e.EndDateTime &&
@@ -43,7 +67,6 @@ namespace EventEase.Controllers
                 ModelState.AddModelError("", "⚠️ This venue is already booked for the selected time slot!");
             }
 
-            // Clear navigation property validation
             ModelState.Remove("Venue");
 
             if (ModelState.IsValid)
@@ -66,10 +89,31 @@ namespace EventEase.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EventId,EventName,Description,EventDate,VenueId")] Event eventItem)
+        public async Task<IActionResult> Edit(int id, [Bind("EventId,EventName,Description,StartDateTime,EndDateTime,VenueId,ImageUrl")] Event eventItem, IFormFile? imageFile)
         {
-            if (!IsAdmin()) return RedirectToAction("Index", "Home");
-            if (ModelState.IsValid) { _context.Update(eventItem); await _context.SaveChangesAsync(); return RedirectToAction(nameof(Index)); }
+            if (id != eventItem.EventId || !IsAdmin()) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // If a new image is uploaded, use it. Otherwise, keep the old ImageUrl
+                    if (imageFile != null && imageFile.Length > 0)
+                    {
+                        eventItem.ImageUrl = await _blobService.UploadImageAsync(imageFile, "event-images");
+                    }
+
+                    _context.Update(eventItem);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Events.Any(e => e.EventId == eventItem.EventId)) return NotFound();
+                    else throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", eventItem.VenueId);
             return View(eventItem);
         }
 

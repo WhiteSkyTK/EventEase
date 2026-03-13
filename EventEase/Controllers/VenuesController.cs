@@ -57,7 +57,9 @@ namespace EventEase.Controllers
         public IActionResult Create()
         {
             if (!IsAdmin()) return RedirectToAction("Index", "Home");
-            return View();
+
+            // Fix: Send an empty Venue object to the view
+            return View(new Venue());
         }
 
         [HttpPost]

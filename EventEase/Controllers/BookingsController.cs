@@ -25,10 +25,17 @@ namespace EventEase.Controllers
             return role == "Admin" || role == "Specialist";
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            if (!IsStaff()) return RedirectToAction("Login", "Account");
-            var bookings = _context.Bookings.Include(b => b.Event).Include(b => b.Venue);
+            ViewData["CurrentFilter"] = searchString;
+            var bookings = _context.Bookings.Include(b => b.Event).Include(b => b.Venue).AsQueryable();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                bookings = bookings.Where(b => b.Event.EventName.Contains(searchString)
+                                            || b.BookingId.ToString().Contains(searchString));
+            }
+
             return View(await bookings.ToListAsync());
         }
 

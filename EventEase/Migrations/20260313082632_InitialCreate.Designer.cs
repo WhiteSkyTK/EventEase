@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEase.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260228160600_AddStaffTabless")]
-    partial class AddStaffTabless
+    [Migration("20260313082632_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,6 +49,15 @@ namespace EventEase.Migrations
                     b.HasIndex("VenueId");
 
                     b.ToTable("Bookings");
+
+                    b.HasData(
+                        new
+                        {
+                            BookingId = 1,
+                            BookingDate = new DateTime(2026, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventId = 1,
+                            VenueId = 1
+                        });
                 });
 
             modelBuilder.Entity("EventEase.Models.Event", b =>
@@ -63,13 +72,19 @@ namespace EventEase.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EventDate")
+                    b.Property<DateTime>("EndDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EventName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("VenueId")
                         .HasColumnType("int");
@@ -79,6 +94,38 @@ namespace EventEase.Migrations
                     b.HasIndex("VenueId");
 
                     b.ToTable("Events");
+
+                    b.HasData(
+                        new
+                        {
+                            EventId = 1,
+                            Description = "Formal dinner and auction.",
+                            EndDateTime = new DateTime(2026, 5, 10, 23, 59, 0, 0, DateTimeKind.Unspecified),
+                            EventName = "Annual Charity Gala",
+                            ImageUrl = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000",
+                            StartDateTime = new DateTime(2026, 5, 10, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            VenueId = 1
+                        },
+                        new
+                        {
+                            EventId = 2,
+                            Description = "Technical conference.",
+                            EndDateTime = new DateTime(2026, 6, 15, 17, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventName = "Cloud Dev Summit",
+                            ImageUrl = "https://images.unsplash.com/photo-1540575861501-7ce0e1d1aa6f?q=80&w=1000",
+                            StartDateTime = new DateTime(2026, 6, 15, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            VenueId = 3
+                        },
+                        new
+                        {
+                            EventId = 3,
+                            Description = "Private ceremony.",
+                            EndDateTime = new DateTime(2026, 7, 20, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventName = "Smith Wedding",
+                            ImageUrl = "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000",
+                            StartDateTime = new DateTime(2026, 7, 20, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            VenueId = 2
+                        });
                 });
 
             modelBuilder.Entity("EventEase.Models.Staff", b =>
@@ -104,6 +151,22 @@ namespace EventEase.Migrations
                     b.HasKey("StaffId");
 
                     b.ToTable("Staff");
+
+                    b.HasData(
+                        new
+                        {
+                            StaffId = 1,
+                            Email = "admin@eventease.com",
+                            Password = "Admin123!",
+                            Role = "Admin"
+                        },
+                        new
+                        {
+                            StaffId = 2,
+                            Email = "specialist@eventease.com",
+                            Password = "Book123!",
+                            Role = "Specialist"
+                        });
                 });
 
             modelBuilder.Entity("EventEase.Models.Venue", b =>
@@ -133,6 +196,40 @@ namespace EventEase.Migrations
                     b.HasKey("VenueId");
 
                     b.ToTable("Venues");
+
+                    b.HasData(
+                        new
+                        {
+                            VenueId = 1,
+                            Capacity = 500,
+                            ImageUrl = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800",
+                            Location = "123 Marble Ave, Cape Town",
+                            VenueName = "The Grand Ballroom"
+                        },
+                        new
+                        {
+                            VenueId = 2,
+                            Capacity = 150,
+                            ImageUrl = "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=800",
+                            Location = "45 Ocean View, Durban",
+                            VenueName = "Sunset Garden"
+                        },
+                        new
+                        {
+                            VenueId = 3,
+                            Capacity = 1000,
+                            ImageUrl = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800",
+                            Location = "88 Innovation Dr, Sandton",
+                            VenueName = "Tech Hub Plaza"
+                        },
+                        new
+                        {
+                            VenueId = 4,
+                            Capacity = 30,
+                            ImageUrl = "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800",
+                            Location = "12 Main St, Pretoria",
+                            VenueName = "Cozy Corner Café"
+                        });
                 });
 
             modelBuilder.Entity("EventEase.Models.Booking", b =>

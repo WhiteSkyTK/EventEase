@@ -15,6 +15,9 @@ namespace EventEase.Models
 
         public string Description { get; set; }
 
+        [Display(Name = "Event Poster")]
+        public string? ImageUrl { get; set; }
+
         // CEO Requirement: Start and End Dates/Times
         [Required]
         [Display(Name = "Start Date & Time")]

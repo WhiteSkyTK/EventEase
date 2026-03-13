@@ -2,7 +2,7 @@
 
 <div class="container">
     <div class="card border-3 shadow-lg p-4" style="border-radius: 25px;">
-        <h2 class="fw-bold mb-2">Edit Venue: @Model.VenueName</h2>
+        <h2 class="fw-bold mb-2">Create Venue: @Model.VenueName</h2>
         <p class="text-muted mb-4">Update the details or change the venue photo.</p>
 
         <form asp-action="Edit" enctype="multipart/form-data">
@@ -53,8 +53,10 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-outline-dark fw-bold border-3 shadow-sm px-4" style="border-radius: 12px;">
+        ⬅️ Back to List
+    </a>
 </div>
 
 @section Scripts {

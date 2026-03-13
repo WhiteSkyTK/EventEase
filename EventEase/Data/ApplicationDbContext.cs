@@ -11,6 +11,7 @@ namespace EventEase.Data
         {
         }
 
+        // Keep these plural to follow standard conventions
         public DbSet<Venue> Venues { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Booking> Bookings { get; set; }
@@ -28,11 +29,38 @@ namespace EventEase.Data
                 new Venue { VenueId = 4, VenueName = "Cozy Corner Café", Location = "12 Main St, Pretoria", Capacity = 30, ImageUrl = "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800" }
             );
 
-            // 2. Seed Events
+            // 2. Seed Events (Now with ImageUrl included!)
             modelBuilder.Entity<Event>().HasData(
-                new Event { EventId = 1, EventName = "Annual Charity Gala", Description = "Formal dinner and auction.", StartDateTime = new DateTime(2026, 05, 10, 18, 0, 0), EndDateTime = new DateTime(2026, 05, 10, 23, 59, 0), VenueId = 1 },
-                new Event { EventId = 2, EventName = "Cloud Dev Summit", Description = "Technical conference.", StartDateTime = new DateTime(2026, 06, 15, 8, 0, 0), EndDateTime = new DateTime(2026, 06, 15, 17, 0, 0), VenueId = 3 },
-                new Event { EventId = 3, EventName = "Smith Wedding", Description = "Private ceremony.", StartDateTime = new DateTime(2026, 07, 20, 14, 0, 0), EndDateTime = new DateTime(2026, 07, 20, 22, 0, 0), VenueId = 2 }
+                new Event
+                {
+                    EventId = 1,
+                    EventName = "Annual Charity Gala",
+                    Description = "Formal dinner and auction.",
+                    StartDateTime = new DateTime(2026, 05, 10, 18, 0, 0),
+                    EndDateTime = new DateTime(2026, 05, 10, 23, 59, 0),
+                    VenueId = 1,
+                    ImageUrl = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000"
+                },
+                new Event
+                {
+                    EventId = 2,
+                    EventName = "Cloud Dev Summit",
+                    Description = "Technical conference.",
+                    StartDateTime = new DateTime(2026, 06, 15, 8, 0, 0),
+                    EndDateTime = new DateTime(2026, 06, 15, 17, 0, 0),
+                    VenueId = 3,
+                    ImageUrl = "https://images.unsplash.com/photo-1540575861501-7ce0e1d1aa6f?q=80&w=1000"
+                },
+                new Event
+                {
+                    EventId = 3,
+                    EventName = "Smith Wedding",
+                    Description = "Private ceremony.",
+                    StartDateTime = new DateTime(2026, 07, 20, 14, 0, 0),
+                    EndDateTime = new DateTime(2026, 07, 20, 22, 0, 0),
+                    VenueId = 2,
+                    ImageUrl = "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000"
+                }
             );
 
             // 3. Seed Bookings
@@ -40,22 +68,10 @@ namespace EventEase.Data
                 new Booking { BookingId = 1, EventId = 1, VenueId = 1, BookingDate = new DateTime(2026, 05, 10) }
             );
 
-            // 4. Seed Staff (Admin and Specialist)
+            // 4. Seed Staff
             modelBuilder.Entity<Staff>().HasData(
-                new Staff
-                {
-                    StaffId = 1,
-                    Email = "admin@eventease.com",
-                    Password = "Admin123!",
-                    Role = "Admin"
-                },
-                new Staff
-                {
-                    StaffId = 2,
-                    Email = "specialist@eventease.com",
-                    Password = "Book123!",
-                    Role = "Specialist"
-                }
+                new Staff { StaffId = 1, Email = "admin@eventease.com", Password = "Admin123!", Role = "Admin" },
+                new Staff { StaffId = 2, Email = "specialist@eventease.com", Password = "Book123!", Role = "Specialist" }
             );
         }
     }

@@ -13,6 +13,17 @@
     <a asp-action="Create" class="btn btn-dark fw-bold border-3">+ Create New Reservation</a>
 </div>
 
+<div class="card p-3 mb-4 border-3 shadow-sm" style="border-radius: 15px; border: 3px solid #000;">
+    <form asp-action="Index" method="get" class="row g-3">
+        <div class="col-md-10">
+            <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by Event Name or ID..." />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100 fw-bold">Search</button>
+        </div>
+    </form>
+</div>
+
 <div class="table-responsive bg-white border-3 shadow" style="border: 3px solid #000; border-radius: 20px;">
     <table class="table table-hover mb-0">
         <thead class="bg-primary text-white">

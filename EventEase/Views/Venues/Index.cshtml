@@ -7,39 +7,58 @@
     var userRole = HttpContextAccessor.HttpContext.Session.GetString("UserRole");
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="fw-bold">🏟️ Our Whimsical Venues</h1>
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger border-3 shadow-sm mb-4" style="border-radius: 15px; border: 2px solid #000;">
-            <strong>@TempData["Error"]</strong>
-        </div>
-    }
-    @if (userRole == "Admin")
-    {
-        <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm" style="border-radius: 15px; border: 3px solid #000;">+ Add New Venue</a>
-    }
-</div>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold text-primary" style="text-shadow: 2px 2px var(--accent-color);">🏰 Explore Our Whimsical Venues</h1>
+        @if (userRole == "Admin")
+        {
+            <a asp-action="Create" class="btn btn-success btn-lg shadow-sm" style="border-radius: 15px; border: 3px solid #000;">+ Add New Venue</a>
+        }
+    </div>
 
-<div class="row g-4">
-    @foreach (var item in Model)
-    {
-        <div class="col-md-4">
-            <div class="card h-100 border-3 shadow-sm" style="border-radius: 20px; overflow: hidden;">
-                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://placehold.co/600x400?text=Venue+Coming+Soon" : item.ImageUrl)" class="card-img-top" style="height: 200px; object-fit: cover; border-bottom: 3px solid #000;">
-                <div class="card-body">
-                    <h4 class="fw-bold">@item.VenueName</h4>
-                    <p class="text-muted">📍 @item.Location</p>
-                    <div class="d-flex gap-2">
-                        <a asp-action="Details" asp-route-id="@item.VenueId" class="btn btn-sm btn-outline-dark fw-bold">Details</a>
-                        @if (userRole == "Admin")
-                        {
-                            <a asp-action="Edit" asp-route-id="@item.VenueId" class="btn btn-sm btn-warning fw-bold border-2 border-dark">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@item.VenueId" class="btn btn-sm btn-danger fw-bold border-2 border-dark">Delete</a>
-                        }
+    <div class="card p-4 mb-5 border-3 shadow-sm" style="border-radius: 20px; background-color: white; border: 3px solid #000;">
+        <form asp-action="Index" method="get" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="fw-bold mb-1">Search Name or Location</label>
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="e.g. Grand Ballroom..." />
+            </div>
+            <div class="col-md-3">
+                <label class="fw-bold mb-1">Min. Capacity</label>
+                <input type="number" name="minCapacity" value="@ViewData["CurrentCapacity"]" class="form-control" placeholder="0" />
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary px-4">🔍 Search</button>
+                <a asp-action="Index" class="btn btn-outline-dark px-4">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 border-3 shadow-sm" style="border-radius: 20px; overflow: hidden; border: 3px solid #000; transition: transform 0.3s;">
+                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://placehold.co/600x400?text=Venue+Coming+Soon" : item.ImageUrl)"
+                         class="card-img-top" style="height: 200px; object-fit: cover; border-bottom: 3px solid #000;">
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h4 class="fw-bold">@item.VenueName</h4>
+                            <span class="badge bg-accent text-dark border border-1 border-dark">👥 @item.Capacity</span>
+                        </div>
+                        <p class="text-muted">📍 @item.Location</p>
+
+                        <div class="d-flex gap-2 mt-3 action-links">
+                            <a asp-action="Details" asp-route-id="@item.VenueId" class="btn btn-sm btn-light fw-bold border-2 border-dark">Details</a>
+                            @if (userRole == "Admin")
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.VenueId" class="btn btn-sm btn-warning fw-bold border-2 border-dark">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.VenueId" class="btn btn-sm btn-danger fw-bold border-2 border-dark">Delete</a>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
