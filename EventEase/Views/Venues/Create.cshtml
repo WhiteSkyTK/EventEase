@@ -1,39 +1,53 @@
-@model EventEase.Models.Venue
+﻿@model EventEase.Models.Venue
 
-@{
-    ViewData["Title"] = "Create";
-}
+<div class="container">
+    <div class="card border-3 shadow-lg p-4" style="border-radius: 25px;">
+        <h2 class="fw-bold mb-2">Edit Venue: @Model.VenueName</h2>
+        <p class="text-muted mb-4">Update the details or change the venue photo.</p>
 
-<h1>Create</h1>
-
-<h4>Venue</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="VenueName" class="control-label"></label>
-                <input asp-for="VenueName" class="form-control" />
-                <span asp-validation-for="VenueName" class="text-danger"></span>
+            <input type="hidden" asp-for="VenueId" />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="VenueName" class="fw-bold"></label>
+                    <input asp-for="VenueName" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Capacity" class="fw-bold"></label>
+                    <input asp-for="Capacity" class="form-control" />
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="Location" class="fw-bold"></label>
                 <input asp-for="Location" class="form-control" />
-                <span asp-validation-for="Location" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Capacity" class="control-label"></label>
-                <input asp-for="Capacity" class="form-control" />
-                <span asp-validation-for="Capacity" class="text-danger"></span>
+
+            <div class="mb-4">
+                <label class="fw-bold d-block mb-2">🖼️ Current/New Image</label>
+                <div class="p-3 border-2 rounded-4 bg-light" style="border: 2px dashed #ccc;">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                            <img src="@Model.ImageUrl" alt="Venue" class="img-thumbnail mb-2" style="max-height: 120px;" />
+                            <p class="small text-muted">Current Preview</p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small fw-bold">Upload New File</label>
+                            <input type="file" name="imageFile" class="form-control" accept="image/*" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small fw-bold">Or Change URL</label>
+                            <input asp-for="ImageUrl" class="form-control" />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success btn-lg px-5">💾 Save Changes</button>
+                <a asp-action="Index" class="btn btn-outline-dark btn-lg">Cancel</a>
             </div>
         </form>
     </div>

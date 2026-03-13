@@ -18,6 +18,9 @@ builder.Services.AddSession(options => {
 
 builder.Services.AddHttpContextAccessor();
 
+// Storage service for handling image uploads
+builder.Services.AddScoped<EventEase.Services.IBlobService, EventEase.Services.BlobService>();
+
 var app = builder.Build();
 
 // 2. Add this before app.MapControllerRoute
