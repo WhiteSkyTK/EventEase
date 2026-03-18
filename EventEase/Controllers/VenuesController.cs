@@ -51,7 +51,20 @@ namespace EventEase.Controllers
             return View(await venues.ToListAsync());
         }
 
-        public async Task<IActionResult> Details(int? id) => id == null ? NotFound() : View(await _context.Venues.FirstOrDefaultAsync(m => m.VenueId == id));
+        // GET: Venues/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+
+            // Include the Bookings so we can see which dates are taken
+            var venue = await _context.Venues
+                .Include(v => v.Bookings)
+                .FirstOrDefaultAsync(m => m.VenueId == id);
+
+            if (venue == null) return NotFound();
+
+            return View(venue);
+        }
 
         // GET: Venues/Create
         public IActionResult Create()
@@ -66,16 +79,31 @@ namespace EventEase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("VenueId,VenueName,Location,Capacity,ImageUrl")] Venue venue, IFormFile? imageFile)
         {
-            // 1. Check if a physical file was uploaded
+            // 1. Clear navigation properties so they don't cause false validation errors
+            ModelState.Remove("Events");
+            ModelState.Remove("Bookings");
+
+            // 2. Image Validation Logic
             if (imageFile != null && imageFile.Length > 0)
             {
-                // Upload to Azure and get the new URL
-                string uploadedUrl = await _blobService.UploadImageAsync(imageFile, "venue-images");
-                venue.ImageUrl = uploadedUrl;
+                var maxFileSize = 5 * 1024 * 1024; // 5 MB
+                if (imageFile.Length > maxFileSize)
+                    ModelState.AddModelError("ImageUrl", "❌ The image is too large. Maximum size is 5MB.");
+
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+                var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(extension))
+                    ModelState.AddModelError("ImageUrl", "❌ Only JPG, PNG, and WEBP images are allowed.");
+
+                // If it passed validation, upload it!
+                if (ModelState.IsValid)
+                {
+                    string uploadedUrl = await _blobService.UploadImageAsync(imageFile, "venue-images");
+                    venue.ImageUrl = uploadedUrl;
+                }
             }
 
-            // 2. If no file was uploaded, it will just use whatever is in venue.ImageUrl (the text box)
-
+            // 3. Save if everything is perfectly valid
             if (ModelState.IsValid)
             {
                 _context.Add(venue);
@@ -100,17 +128,26 @@ namespace EventEase.Controllers
             if (id != venue.VenueId) return NotFound();
             if (!IsAdmin()) return RedirectToAction("Index", "Home");
 
-            // 1. Logic: If a new file is uploaded, use it. 
-            // If not, it keeps whatever is in the ImageUrl text box (which could be the old URL).
-            if (imageFile != null && imageFile.Length > 0)
-            {
-                string uploadedUrl = await _blobService.UploadImageAsync(imageFile, "venue-images");
-                venue.ImageUrl = uploadedUrl;
-            }
-
-            // 2. Clear validation for navigation properties
             ModelState.Remove("Events");
             ModelState.Remove("Bookings");
+
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var maxFileSize = 5 * 1024 * 1024; // 5 MB
+                if (imageFile.Length > maxFileSize)
+                    ModelState.AddModelError("ImageUrl", "❌ The image is too large. Maximum size is 5MB.");
+
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+                var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(extension))
+                    ModelState.AddModelError("ImageUrl", "❌ Only JPG, PNG, and WEBP images are allowed.");
+
+                if (ModelState.IsValid)
+                {
+                    string uploadedUrl = await _blobService.UploadImageAsync(imageFile, "venue-images");
+                    venue.ImageUrl = uploadedUrl;
+                }
+            }
 
             if (ModelState.IsValid)
             {
@@ -128,7 +165,6 @@ namespace EventEase.Controllers
             }
             return View(venue);
         }
-
         // GET: Venues/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

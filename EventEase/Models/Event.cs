@@ -1,39 +1,53 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using System;
 
 namespace EventEase.Models
 {
-    public class Event
+    // Added IValidatableObject for custom date logic
+    public class Event : IValidatableObject
     {
         [Key]
         public int EventId { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string EventName { get; set; }
+        [Required(ErrorMessage = "❌ Event Name is required.")]
+        [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
+        public string EventName { get; set; } = string.Empty;
 
-        public string Description { get; set; }
+        [Required(ErrorMessage = "❌ Please provide a description.")]
+        public string Description { get; set; } = string.Empty;
 
         [Display(Name = "Event Poster")]
         public string? ImageUrl { get; set; }
 
-        // CEO Requirement: Start and End Dates/Times
         [Required]
         [Display(Name = "Start Date & Time")]
-        public DateTime StartDateTime { get; set; }
+        // FIX: Defaults to today to prevent the "Year 0" bug
+        public DateTime StartDateTime { get; set; } = DateTime.Today.AddHours(12);
 
         [Required]
         [Display(Name = "End Date & Time")]
-        public DateTime EndDateTime { get; set; }
+        // FIX: Defaults to today + 4 hours
+        public DateTime EndDateTime { get; set; } = DateTime.Today.AddHours(16);
 
-        // Nullable because events can be loaded before a venue is assigned
         public int? VenueId { get; set; }
 
         [ForeignKey("VenueId")]
         public virtual Venue? Venue { get; set; }
 
-        // Navigation property
         public virtual ICollection<Booking>? Bookings { get; set; }
+
+        // --- CUSTOM VALIDATION ---
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (EndDateTime <= StartDateTime)
+            {
+                yield return new ValidationResult(
+                    "🛑 The End Date/Time must be AFTER the Start Date/Time!",
+                    new[] { nameof(EndDateTime) });
+            }
+        }
     }
 }

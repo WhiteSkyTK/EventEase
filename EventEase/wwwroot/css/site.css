@@ -297,3 +297,26 @@ a[asp-action="Details"], a[asp-action="Index"] {
     .table tbody tr:nth-child(2) {
         animation-delay: 0.2s;
     }
+
+/* Make validation messages look like little warning bubbles */
+.field-validation-error {
+    display: block;
+    margin-top: 5px;
+    font-weight: bold;
+    color: #ff6b6b !important; /* Matches your primary theme color */
+    animation: shake 0.2s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}

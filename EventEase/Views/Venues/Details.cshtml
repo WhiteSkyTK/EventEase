@@ -39,6 +39,41 @@
                     </div>
                 </div>
 
+                <div class="mb-4">
+                    <label class="text-muted small text-uppercase fw-bold">📅 Availability Status</label>
+                    <div class="p-3 bg-light border-2 rounded-3" style="border: 2px dashed #ff6b6b;">
+
+                        @{
+                            // Get all bookings that are happening today or in the future
+                            var upcomingBookings = Model.Bookings?
+                            .Where(b => b.BookingDate.Date >= DateTime.Today)
+                            .OrderBy(b => b.BookingDate)
+                            .ToList();
+                        }
+
+                        @if (upcomingBookings != null && upcomingBookings.Any())
+                        {
+                            <p class="text-danger fw-bold mb-2">🛑 Unavailable on these dates:</p>
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var booking in upcomingBookings)
+                                {
+                                    <li class="mb-1">
+                                        <span class="badge bg-danger text-white fs-6">
+                                            @booking.BookingDate.ToString("dd MMM yyyy")
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-success fw-bold mb-0 fs-5">
+                                ✨ Currently available for all upcoming dates!
+                            </p>
+                        }
+                    </div>
+                </div>
+
                 <div class="mt-5 d-flex gap-3">
                     @if (userRole == "Admin")
                     {

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEase.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260313082632_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260318113304_FinalStaffHashing")]
+    partial class FinalStaffHashing
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,14 +157,14 @@ namespace EventEase.Migrations
                         {
                             StaffId = 1,
                             Email = "admin@eventease.com",
-                            Password = "Admin123!",
+                            Password = "AQAAAAIAAYagAAAAEJ9V6X8Y9QpY4z5L7vN3nK9wR2mB5tC8vX1zL0P9Q8W7E6R5",
                             Role = "Admin"
                         },
                         new
                         {
                             StaffId = 2,
                             Email = "specialist@eventease.com",
-                            Password = "Book123!",
+                            Password = "AQAAAAIAAYagAAAAEB7V5X9Y8QpX4z4L6vN2nK8wR1mB4tC7vX0zL9P8Q7W6E5R4",
                             Role = "Specialist"
                         });
                 });

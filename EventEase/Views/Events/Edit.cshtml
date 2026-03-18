@@ -10,9 +10,9 @@
             <h2 class="fw-bold mb-0">✏️ Modify Event</h2>
         </div>
         <div class="card-body p-4">
-            <form asp-action="Edit">
-                @* PLACE ERROR MESSAGE HERE *@
+            <form asp-action="Edit" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger fw-bold mb-3"></div>
+
                 @if (TempData["Error"] != null)
                 {
                     <div class="alert alert-danger border-2 mb-3">@TempData["Error"]</div>
@@ -35,16 +35,36 @@
                     <div class="col-md-6 mb-3">
                         <label asp-for="StartDateTime" class="fw-bold">Starts At</label>
                         <input asp-for="StartDateTime" class="form-control border-2" type="datetime-local" />
+                        <span asp-validation-for="StartDateTime" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label asp-for="EndDateTime" class="fw-bold">Ends At</label>
                         <input asp-for="EndDateTime" class="form-control border-2" type="datetime-local" />
+                        <span asp-validation-for="EndDateTime" class="text-danger"></span>
                     </div>
 
-                    <div class="col-12 mb-3">
+                    <div class="col-12 mb-4">
                         <label asp-for="Description" class="fw-bold"></label>
                         <textarea asp-for="Description" class="form-control border-2" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4 p-4 border-3 rounded-4 bg-light" style="border: 3px dashed #000;">
+                    <label class="fw-bold d-block mb-2">📸 Event Poster</label>
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center border-end border-2">
+                            <img id="preview" src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://placehold.co/150x150?text=Poster" : Model.ImageUrl)" class="img-fluid rounded-3" style="max-height: 120px;" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small fw-bold">Upload New File</label>
+                            <input type="file" name="imageFile" id="imageFileInput" class="form-control border-2" accept="image/*" />
+                        </div>
+                        <div class="col-md-5">
+                            <label class="small fw-bold">Or External Image URL</label>
+                            <input asp-for="ImageUrl" id="imageUrlInput" class="form-control border-2" />
+                        </div>
                     </div>
                 </div>
 
@@ -64,5 +84,15 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.getElementById('imageUrlInput').addEventListener('input', function() {
+            if (this.value) document.getElementById('preview').src = this.value;
+        });
+        document.getElementById('imageFileInput').addEventListener('change', function() {
+            if (this.files[0]) document.getElementById('preview').src = URL.createObjectURL(this.files[0]);
+        });
+    </script>
 }

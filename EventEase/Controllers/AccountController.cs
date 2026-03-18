@@ -1,7 +1,9 @@
 ﻿using EventEase.Data;
 using EventEase.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventEase.Controllers
 {
@@ -19,17 +21,39 @@ namespace EventEase.Controllers
 
         // POST: Account/Login
         [HttpPost]
-        public IActionResult Login(string email, string password)
+        public async Task<IActionResult> Login(string email, string password)
         {
-            var user = _context.Staff.FirstOrDefault(u => u.Email == email && u.Password == password);
+            // DEBUG: See what the user typed
+            Console.WriteLine($"--- Login Attempt: {email} ---");
+
+            var user = await _context.Staff.FirstOrDefaultAsync(u => u.Email == email);
 
             if (user != null)
             {
-                // Store the user role in the Session
-                HttpContext.Session.SetString("UserRole", user.Role);
-                HttpContext.Session.SetString("UserEmail", user.Email);
+                // DEBUG: Check if the hash is truncated (should be ~84+ chars)
+                Console.WriteLine($"User Found! Role: {user.Role}");
+                Console.WriteLine($"Stored Hash Length: {user.Password.Length}");
+                Console.WriteLine($"Stored Hash: {user.Password}");
 
-                return RedirectToAction("Dashboard", "Account");
+                var hasher = new PasswordHasher<Staff>();
+                var result = hasher.VerifyHashedPassword(user, user.Password, password);
+
+                // DEBUG: See exactly why it failed
+                Console.WriteLine($"Verification Result: {result}");
+
+                if (result == PasswordVerificationResult.Success)
+                {
+                    HttpContext.Session.SetString("UserRole", user.Role);
+                    return RedirectToAction("Index", "Home");
+                }
+                else if (result == PasswordVerificationResult.SuccessRehashNeeded)
+                {
+                    Console.WriteLine("Warning: Password verified but needs rehash.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("User not found in database.");
             }
 
             ViewBag.Error = "Invalid Login Credentials! ❌";
@@ -75,18 +99,18 @@ namespace EventEase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddStaff(Staff staff)
         {
-            if (HttpContext.Session.GetString("UserRole") != "Admin")
-                return RedirectToAction("Index", "Home");
-
             if (ModelState.IsValid)
             {
-                // Check if the email is already taken
                 var exists = _context.Staff.Any(s => s.Email == staff.Email);
                 if (exists)
                 {
-                    ViewBag.Error = "This email is already registered to a staff member! 🛑";
+                    ViewBag.Error = "This email is already registered! 🛑";
                     return View(staff);
                 }
+
+                // --- THE FIX: HASH THE PASSWORD HERE ---
+                var hasher = new PasswordHasher<Staff>();
+                staff.Password = hasher.HashPassword(staff, staff.Password);
 
                 _context.Add(staff);
                 await _context.SaveChangesAsync();

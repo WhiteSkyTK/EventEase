@@ -4,6 +4,7 @@ using EventEase.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEase.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260318115601_AddCustomerDetails")]
+    partial class AddCustomerDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,8 +157,7 @@ namespace EventEase.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -170,14 +172,14 @@ namespace EventEase.Migrations
                         {
                             StaffId = 1,
                             Email = "admin@eventease.com",
-                            Password = "AQAAAAIAAYagAAAAEG5WjhmfKvjjw8e9raR5Fz2FFgieTMQddiiVd+lGNjjQQ37acmMretgZ547KX4UN1w==",
+                            Password = "AQAAAAIAAYagAAAAEJ9V6X8Y9QpY4z5L7vN3nK9wR2mB5tC8vX1zL0P9Q8W7E6R5",
                             Role = "Admin"
                         },
                         new
                         {
                             StaffId = 2,
                             Email = "specialist@eventease.com",
-                            Password = "AQAAAAIAAYagAAAAED+hvEw62MOxISLrGaCxt/jjP++vp7Rbf6LvCaE9Nxw2LaHZiNOyqLswykOGFnbSQw==",
+                            Password = "AQAAAAIAAYagAAAAEB7V5X9Y8QpX4z4L6vN2nK8wR1mB4tC7vX0zL9P8Q7W6E5R4",
                             Role = "Specialist"
                         });
                 });

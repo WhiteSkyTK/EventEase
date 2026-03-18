@@ -13,9 +13,10 @@ namespace EventEase.Models
 
         [Required]
         [DataType(DataType.Password)]
+        [StringLength(255)] // <--- CRITICAL: Prevents database truncation
         public string Password { get; set; } = string.Empty;
 
         [Required]
-        public string Role { get; set; } = "Specialist"; // Admin or Specialist
+        public string Role { get; set; } = "Specialist";
     }
 }

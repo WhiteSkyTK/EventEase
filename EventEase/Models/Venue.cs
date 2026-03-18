@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace EventEase.Models
 {
@@ -9,21 +9,22 @@ namespace EventEase.Models
         [Key]
         public int VenueId { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string VenueName { get; set; }
+        [Required(ErrorMessage = "❌ Please provide a name for this venue.")]
+        [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
+        [Display(Name = "Venue Name")]
+        public string VenueName { get; set; } = string.Empty;
 
-        [Required]
-        public string Location { get; set; }
+        [Required(ErrorMessage = "❌ A location is required.")]
+        public string Location { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "❌ Capacity is required.")]
+        [Range(1, 100000, ErrorMessage = "❌ Capacity must be greater than 0!")]
         public int Capacity { get; set; }
 
-        // Placeholder URL for POE Part 1 requirement
         public string ImageUrl { get; set; } = "https://via.placeholder.com/150";
 
         // Navigation properties
-        public ICollection<Event> Events { get; set; }
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<Event>? Events { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }

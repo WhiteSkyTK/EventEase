@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EventEase.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 
 namespace EventEase.Data
@@ -11,7 +12,6 @@ namespace EventEase.Data
         {
         }
 
-        // Keep these plural to follow standard conventions
         public DbSet<Venue> Venues { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Booking> Bookings { get; set; }
@@ -29,7 +29,7 @@ namespace EventEase.Data
                 new Venue { VenueId = 4, VenueName = "Cozy Corner Café", Location = "12 Main St, Pretoria", Capacity = 30, ImageUrl = "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800" }
             );
 
-            // 2. Seed Events (Now with ImageUrl included!)
+            // 2. Seed Events
             modelBuilder.Entity<Event>().HasData(
                 new Event
                 {
@@ -68,10 +68,23 @@ namespace EventEase.Data
                 new Booking { BookingId = 1, EventId = 1, VenueId = 1, BookingDate = new DateTime(2026, 05, 10) }
             );
 
-            // 4. Seed Staff
+            // 4. Seed Staff with STATIC Hashed Passwords
+            // This prevents the "PendingModelChangesWarning" because the strings are now constant.
             modelBuilder.Entity<Staff>().HasData(
-                new Staff { StaffId = 1, Email = "admin@eventease.com", Password = "Admin123!", Role = "Admin" },
-                new Staff { StaffId = 2, Email = "specialist@eventease.com", Password = "Book123!", Role = "Specialist" }
+                new Staff
+                {
+                    StaffId = 1,
+                    Email = "admin@eventease.com",
+                    Role = "Admin",
+                    Password = "AQAAAAIAAYagAAAAEG5WjhmfKvjjw8e9raR5Fz2FFgieTMQddiiVd+lGNjjQQ37acmMretgZ547KX4UN1w==" // Hash for Admin123!
+                },
+                new Staff
+                {
+                    StaffId = 2,
+                    Email = "specialist@eventease.com",
+                    Role = "Specialist",
+                    Password = "AQAAAAIAAYagAAAAED+hvEw62MOxISLrGaCxt/jjP++vp7Rbf6LvCaE9Nxw2LaHZiNOyqLswykOGFnbSQw==" // Hash for Book123!
+                }
             );
         }
     }

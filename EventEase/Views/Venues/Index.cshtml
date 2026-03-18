@@ -16,6 +16,13 @@
         }
     </div>
 
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger border-3 mb-4 shadow" style="border-radius: 15px; border: 2px solid #000;">
+            <strong>@TempData["Error"]</strong>
+        </div>
+    }
+
     <div class="card p-4 mb-5 border-3 shadow-sm" style="border-radius: 20px; background-color: white; border: 3px solid #000;">
         <form asp-action="Index" method="get" class="row g-3 align-items-end">
             <div class="col-md-5">

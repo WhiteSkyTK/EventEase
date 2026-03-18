@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EventEase.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class FinalStaffHashing : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -99,8 +99,8 @@ namespace EventEase.Migrations
                 columns: new[] { "StaffId", "Email", "Password", "Role" },
                 values: new object[,]
                 {
-                    { 1, "admin@eventease.com", "Admin123!", "Admin" },
-                    { 2, "specialist@eventease.com", "Book123!", "Specialist" }
+                    { 1, "admin@eventease.com", "AQAAAAIAAYagAAAAEJ9V6X8Y9QpY4z5L7vN3nK9wR2mB5tC8vX1zL0P9Q8W7E6R5", "Admin" },
+                    { 2, "specialist@eventease.com", "AQAAAAIAAYagAAAAEB7V5X9Y8QpX4z4L6vN2nK8wR1mB4tC7vX0zL9P8Q7W6E5R4", "Specialist" }
                 });
 
             migrationBuilder.InsertData(

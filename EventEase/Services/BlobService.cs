@@ -24,7 +24,7 @@ namespace EventEase.Services
 
             // 1. Create container if it doesn't exist
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-            await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+            await containerClient.CreateIfNotExistsAsync();
 
             // 2. Generate a unique name for the image
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);

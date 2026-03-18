@@ -48,23 +48,29 @@ namespace EventEase.Controllers
             return booking == null ? NotFound() : View(booking);
         }
 
+        // GET: Bookings/Create
         public IActionResult Create()
         {
             if (!IsStaff()) return RedirectToAction("Index", "Home");
             ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName");
-            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "Location");
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName");
+
+            // NEW: Fetch upcoming bookings so the Specialist can see them
+            ViewBag.UpcomingBookings = _context.Bookings
+                .Include(b => b.Venue)
+                .Where(b => b.BookingDate >= DateTime.Today)
+                .OrderBy(b => b.BookingDate)
+                .ToList();
+
             return View();
         }
 
         // POST: Bookings/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookingId,EventId,VenueId,BookingDate")] Booking booking)
+        // Added the new customer fields to the [Bind] list
+        public async Task<IActionResult> Create([Bind("BookingId,EventId,VenueId,BookingDate,CustomerName,CustomerSurname,CustomerPhone")] Booking booking)
         {
-            var role = HttpContext.Session.GetString("UserRole");
-            if (string.IsNullOrEmpty(role)) return RedirectToAction("Login", "Account");
-
-            // FIX: Ignore the "Event" and "Venue" objects during validation
             ModelState.Remove("Event");
             ModelState.Remove("Venue");
 
@@ -74,7 +80,7 @@ namespace EventEase.Controllers
 
             if (alreadyBooked)
             {
-                ModelState.AddModelError("BookingDate", "🛑 Venue is already booked for this date!");
+                ModelState.AddModelError("BookingDate", "🛑 This venue is already occupied on this date!");
             }
 
             if (ModelState.IsValid)
@@ -84,7 +90,6 @@ namespace EventEase.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // IF WE FAIL: We MUST reload the lists or the page breaks
             ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", booking.VenueId);
             return View(booking);
@@ -111,7 +116,7 @@ namespace EventEase.Controllers
         // POST: Bookings/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookingId,EventId,VenueId,BookingDate")] Booking booking)
+        public async Task<IActionResult> Edit(int id, [Bind("BookingId,EventId,VenueId,BookingDate,CustomerName,CustomerSurname,CustomerPhone")] Booking booking)
         {
             if (id != booking.BookingId) return NotFound();
 
@@ -165,13 +170,22 @@ namespace EventEase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await _context.Bookings.Include(b => b.Event).FirstOrDefaultAsync(m => m.BookingId == id);
+
             if (booking != null)
             {
-                _context.Bookings.Remove(booking);
-            }
+                // 48-Hour Cancellation Rule
+                var hoursUntilEvent = (booking.Event.StartDateTime - DateTime.Now).TotalHours;
 
-            await _context.SaveChangesAsync();
+                if (hoursUntilEvent < 48)
+                {
+                    TempData["Error"] = "Cancellations must be made at least 48 hours in advance! 🛑";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _context.Bookings.Remove(booking);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 

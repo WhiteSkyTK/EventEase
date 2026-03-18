@@ -30,7 +30,7 @@
                 <div class="p-3 border-2 rounded-4 bg-light" style="border: 2px dashed #ccc;">
                     <div class="row align-items-center">
                         <div class="col-md-4 text-center">
-                            <img src="@Model.ImageUrl" alt="Venue" class="img-thumbnail mb-2" style="max-height: 120px;" />
+                            <img src="@Model.ImageUrl" id="imagePreview" alt="Venue Preview" class="img-thumbnail mb-2" style="max-height: 120px;" />
                             <p class="small text-muted">Current Preview</p>
                         </div>
                         <div class="col-md-4">
@@ -60,5 +60,18 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Listen for when a user selects a new file
+        document.querySelector('input[name="imageFile"]').addEventListener('change', function (event) {
+            const [file] = event.target.files;
+            if (file) {
+                // Update the image source to a temporary local URL for preview
+                document.getElementById('imagePreview').src = URL.createObjectURL(file);
+            }
+        });
+    </script>
 }

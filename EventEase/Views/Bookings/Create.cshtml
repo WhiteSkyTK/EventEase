@@ -24,28 +24,46 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger fw-bold mb-3"></div>
 
                     <div class="mb-3">
-                        <label asp-for="EventId" class="form-label fw-bold">Select Event Type</label>
-                        <select asp-for="EventId" class="form-select border-2" asp-items="ViewBag.EventId" style="border-radius: 10px;"></select>
+                        <label asp-for="EventId" class="form-label fw-bold"></label>
+                        <select asp-for="EventId" class="form-select border-2" asp-items="ViewBag.EventId"></select>
+                        <span asp-validation-for="EventId" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="VenueId" class="form-label fw-bold">Select Venue</label>
-                        <select asp-for="VenueId" class="form-select border-2" asp-items="ViewBag.VenueId" style="border-radius: 10px;"></select>
+                        <label asp-for="VenueId" class="form-label fw-bold"></label>
+                        <select asp-for="VenueId" class="form-select border-2" asp-items="ViewBag.VenueId"></select>
+                        <span asp-validation-for="VenueId" class="text-danger small"></span>
                     </div>
 
-                    <div class="mb-4">
-                        <label asp-for="BookingDate" class="form-label fw-bold">Reservation Date</label>
-                        <input asp-for="BookingDate" type="date" class="form-control border-2" style="border-radius: 10px;" />
+                    <div class="mb-3">
+                        <label asp-for="BookingDate" class="form-label fw-bold"></label>
+                        <input asp-for="BookingDate" type="date" class="form-control border-2" />
                         <span asp-validation-for="BookingDate" class="text-danger small"></span>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CustomerName" class="form-label fw-bold"></label>
+                            <input asp-for="CustomerName" class="form-control border-2" placeholder="Jane" />
+                            <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CustomerSurname" class="form-label fw-bold"></label>
+                            <input asp-for="CustomerSurname" class="form-control border-2" placeholder="Doe" />
+                            <span asp-validation-for="CustomerSurname" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="CustomerPhone" class="form-label fw-bold"></label>
+                        <input asp-for="CustomerPhone" class="form-control border-2" placeholder="012 345 6789" />
+                        <span asp-validation-for="CustomerPhone" class="text-danger small"></span>
+                    </div>
+
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm" style="border-radius: 15px;">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
                             ✨ Confirm Reservation
                         </button>
-                        <a asp-action="Index" class="btn btn-outline-secondary fw-bold mt-2" style="border-radius: 12px;">
-                            ⬅️ Back to Booking List
-                        </a>
                     </div>
                 </form>
             </div>
@@ -53,9 +71,36 @@
 
         <div class="col-md-5 offset-md-1">
             <div class="p-4 bg-light border-3 h-100" style="border: 3px dashed #000; border-radius: 25px;">
-                <h4 class="fw-bold">💡 Specialist Tip</h4>
-                <p>Ensure you have verified the client's guest count against the <b>Venue Capacity</b> before confirming.</p>
-                <ul class="text-muted">
+                <h4 class="fw-bold text-danger">🛑 Unavailable Dates</h4>
+                <p class="text-muted small">Do not schedule new events on these dates for the respective venues:</p>
+
+                @{
+                    var upcomingBookings = ViewBag.UpcomingBookings as IEnumerable<EventEase.Models.Booking>;
+                }
+
+                @if (upcomingBookings != null && upcomingBookings.Any())
+                {
+                    <ul class="list-group list-group-flush mb-4 border-2" style="border: 2px solid #000; border-radius: 15px; overflow: hidden;">
+                        @foreach (var b in upcomingBookings)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>@b.BookingDate.ToString("MMM dd, yyyy")</strong>
+                                <span class="badge bg-danger rounded-pill fs-6">@(b.Venue?.VenueName ?? "Venue")</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="alert alert-success border-2 border-dark fw-bold shadow-sm">
+                        ✨ All venues are currently wide open!
+                    </div>
+                }
+
+                <hr style="border-top: 2px dashed #ccc;">
+
+                <h5 class="fw-bold mt-3">💡 Specialist Tip</h5>
+                <ul class="text-muted small">
                     <li>Double-check for public holidays.</li>
                     <li>Verify setup time with the venue manager.</li>
                 </ul>
