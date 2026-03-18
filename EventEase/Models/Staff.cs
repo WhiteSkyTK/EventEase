@@ -7,13 +7,13 @@ namespace EventEase.Models
         [Key]
         public int StaffId { get; set; }
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "❌ An email address is required.")]
+        [EmailAddress(ErrorMessage = "❌ Please enter a valid email format.")]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
-        [DataType(DataType.Password)]
-        [StringLength(255)] // <--- CRITICAL: Prevents database truncation
+        [Required(ErrorMessage = "❌ A temporary password is required.")]
+        [MinLength(6, ErrorMessage = "❌ Password must be at least 6 characters long.")]
+        [MaxLength(255)] // Prevents database truncation issues with the hash!
         public string Password { get; set; } = string.Empty;
 
         [Required]

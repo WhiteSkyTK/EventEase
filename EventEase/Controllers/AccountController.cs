@@ -60,13 +60,23 @@ namespace EventEase.Controllers
             return View();
         }
 
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
-            // Security check: If someone tries to go to /Account/Dashboard without logging in
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserRole")))
+            var role = HttpContext.Session.GetString("UserRole");
+
+            // Security check: If not logged in, kick to login page
+            if (string.IsNullOrEmpty(role))
             {
                 return RedirectToAction("Login");
             }
+
+            // ONLY Admins need these counts, so we only query the DB if they are an Admin
+            if (role == "Admin")
+            {
+                ViewBag.VenueCount = await _context.Venues.CountAsync();
+                ViewBag.BookingCount = await _context.Bookings.CountAsync();
+            }
+
             return View();
         }
 
