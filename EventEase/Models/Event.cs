@@ -32,6 +32,9 @@ namespace EventEase.Models
         // FIX: Defaults to today + 4 hours
         public DateTime EndDateTime { get; set; } = DateTime.Today.AddHours(16);
 
+        public int EventTypeId { get; set; }
+        public EventType? EventType { get; set; }
+
         public int? VenueId { get; set; }
 
         [ForeignKey("VenueId")]

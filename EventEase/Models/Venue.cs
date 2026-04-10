@@ -23,6 +23,9 @@ namespace EventEase.Models
 
         public string ImageUrl { get; set; } = "https://via.placeholder.com/150";
 
+        [Display(Name = "Currently Available")]
+        public bool IsAvailable { get; set; } = true; // New field for Part 3
+
         // Navigation properties
         public ICollection<Event>? Events { get; set; }
         public ICollection<Booking>? Bookings { get; set; }

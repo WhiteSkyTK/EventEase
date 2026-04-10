@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEase.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260318113304_FinalStaffHashing")]
-    partial class FinalStaffHashing
+    [Migration("20260410191343_InitialFinal")]
+    partial class InitialFinal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,18 @@ namespace EventEase.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerSurname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
@@ -55,6 +67,9 @@ namespace EventEase.Migrations
                         {
                             BookingId = 1,
                             BookingDate = new DateTime(2026, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CustomerName = "Admin",
+                            CustomerPhone = "0123456789",
+                            CustomerSurname = "Tester",
                             EventId = 1,
                             VenueId = 1
                         });
@@ -80,6 +95,9 @@ namespace EventEase.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("EventTypeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -90,6 +108,8 @@ namespace EventEase.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("EventId");
+
+                    b.HasIndex("EventTypeId");
 
                     b.HasIndex("VenueId");
 
@@ -102,6 +122,7 @@ namespace EventEase.Migrations
                             Description = "Formal dinner and auction.",
                             EndDateTime = new DateTime(2026, 5, 10, 23, 59, 0, 0, DateTimeKind.Unspecified),
                             EventName = "Annual Charity Gala",
+                            EventTypeId = 4,
                             ImageUrl = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000",
                             StartDateTime = new DateTime(2026, 5, 10, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             VenueId = 1
@@ -112,6 +133,7 @@ namespace EventEase.Migrations
                             Description = "Technical conference.",
                             EndDateTime = new DateTime(2026, 6, 15, 17, 0, 0, 0, DateTimeKind.Unspecified),
                             EventName = "Cloud Dev Summit",
+                            EventTypeId = 2,
                             ImageUrl = "https://images.unsplash.com/photo-1540575861501-7ce0e1d1aa6f?q=80&w=1000",
                             StartDateTime = new DateTime(2026, 6, 15, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             VenueId = 3
@@ -122,9 +144,49 @@ namespace EventEase.Migrations
                             Description = "Private ceremony.",
                             EndDateTime = new DateTime(2026, 7, 20, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             EventName = "Smith Wedding",
+                            EventTypeId = 1,
                             ImageUrl = "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000",
                             StartDateTime = new DateTime(2026, 7, 20, 14, 0, 0, 0, DateTimeKind.Unspecified),
                             VenueId = 2
+                        });
+                });
+
+            modelBuilder.Entity("EventEase.Models.EventType", b =>
+                {
+                    b.Property<int>("EventTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventTypeId"));
+
+                    b.Property<string>("TypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EventTypeId");
+
+                    b.ToTable("EventTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            EventTypeId = 1,
+                            TypeName = "Wedding"
+                        },
+                        new
+                        {
+                            EventTypeId = 2,
+                            TypeName = "Conference"
+                        },
+                        new
+                        {
+                            EventTypeId = 3,
+                            TypeName = "Concert"
+                        },
+                        new
+                        {
+                            EventTypeId = 4,
+                            TypeName = "Gala"
                         });
                 });
 
@@ -142,7 +204,8 @@ namespace EventEase.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -157,14 +220,14 @@ namespace EventEase.Migrations
                         {
                             StaffId = 1,
                             Email = "admin@eventease.com",
-                            Password = "AQAAAAIAAYagAAAAEJ9V6X8Y9QpY4z5L7vN3nK9wR2mB5tC8vX1zL0P9Q8W7E6R5",
+                            Password = "AQAAAAIAAYagAAAAEG5WjhmfKvjjw8e9raR5Fz2FFgieTMQddiiVd+lGNjjQQ37acmMretgZ547KX4UN1w==",
                             Role = "Admin"
                         },
                         new
                         {
                             StaffId = 2,
                             Email = "specialist@eventease.com",
-                            Password = "AQAAAAIAAYagAAAAEB7V5X9Y8QpX4z4L6vN2nK8wR1mB4tC7vX0zL9P8Q7W6E5R4",
+                            Password = "AQAAAAIAAYagAAAAED+hvEw62MOxISLrGaCxt/jjP++vp7Rbf6LvCaE9Nxw2LaHZiNOyqLswykOGFnbSQw==",
                             Role = "Specialist"
                         });
                 });
@@ -183,6 +246,9 @@ namespace EventEase.Migrations
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -203,6 +269,7 @@ namespace EventEase.Migrations
                             VenueId = 1,
                             Capacity = 500,
                             ImageUrl = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800",
+                            IsAvailable = true,
                             Location = "123 Marble Ave, Cape Town",
                             VenueName = "The Grand Ballroom"
                         },
@@ -211,6 +278,7 @@ namespace EventEase.Migrations
                             VenueId = 2,
                             Capacity = 150,
                             ImageUrl = "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=800",
+                            IsAvailable = true,
                             Location = "45 Ocean View, Durban",
                             VenueName = "Sunset Garden"
                         },
@@ -219,6 +287,7 @@ namespace EventEase.Migrations
                             VenueId = 3,
                             Capacity = 1000,
                             ImageUrl = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800",
+                            IsAvailable = true,
                             Location = "88 Innovation Dr, Sandton",
                             VenueName = "Tech Hub Plaza"
                         },
@@ -227,6 +296,7 @@ namespace EventEase.Migrations
                             VenueId = 4,
                             Capacity = 30,
                             ImageUrl = "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800",
+                            IsAvailable = true,
                             Location = "12 Main St, Pretoria",
                             VenueName = "Cozy Corner Café"
                         });
@@ -253,9 +323,17 @@ namespace EventEase.Migrations
 
             modelBuilder.Entity("EventEase.Models.Event", b =>
                 {
+                    b.HasOne("EventEase.Models.EventType", "EventType")
+                        .WithMany("Events")
+                        .HasForeignKey("EventTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EventEase.Models.Venue", "Venue")
                         .WithMany("Events")
                         .HasForeignKey("VenueId");
+
+                    b.Navigation("EventType");
 
                     b.Navigation("Venue");
                 });
@@ -263,6 +341,11 @@ namespace EventEase.Migrations
             modelBuilder.Entity("EventEase.Models.Event", b =>
                 {
                     b.Navigation("Bookings");
+                });
+
+            modelBuilder.Entity("EventEase.Models.EventType", b =>
+                {
+                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("EventEase.Models.Venue", b =>

@@ -8,11 +8,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EventEase.Migrations
 {
     /// <inheritdoc />
-    public partial class FinalStaffHashing : Migration
+    public partial class InitialFinal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "EventTypes",
+                columns: table => new
+                {
+                    EventTypeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TypeName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventTypes", x => x.EventTypeId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Staff",
                 columns: table => new
@@ -20,7 +33,7 @@ namespace EventEase.Migrations
                     StaffId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -37,7 +50,8 @@ namespace EventEase.Migrations
                     VenueName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,11 +69,18 @@ namespace EventEase.Migrations
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EventTypeId = table.Column<int>(type: "int", nullable: false),
                     VenueId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Events", x => x.EventId);
+                    table.ForeignKey(
+                        name: "FK_Events_EventTypes_EventTypeId",
+                        column: x => x.EventTypeId,
+                        principalTable: "EventTypes",
+                        principalColumn: "EventTypeId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Events_Venues_VenueId",
                         column: x => x.VenueId,
@@ -73,9 +94,12 @@ namespace EventEase.Migrations
                 {
                     BookingId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerSurname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EventId = table.Column<int>(type: "int", nullable: false),
-                    VenueId = table.Column<int>(type: "int", nullable: false),
-                    BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    VenueId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,39 +119,50 @@ namespace EventEase.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "EventTypes",
+                columns: new[] { "EventTypeId", "TypeName" },
+                values: new object[,]
+                {
+                    { 1, "Wedding" },
+                    { 2, "Conference" },
+                    { 3, "Concert" },
+                    { 4, "Gala" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Staff",
                 columns: new[] { "StaffId", "Email", "Password", "Role" },
                 values: new object[,]
                 {
-                    { 1, "admin@eventease.com", "AQAAAAIAAYagAAAAEJ9V6X8Y9QpY4z5L7vN3nK9wR2mB5tC8vX1zL0P9Q8W7E6R5", "Admin" },
-                    { 2, "specialist@eventease.com", "AQAAAAIAAYagAAAAEB7V5X9Y8QpX4z4L6vN2nK8wR1mB4tC7vX0zL9P8Q7W6E5R4", "Specialist" }
+                    { 1, "admin@eventease.com", "AQAAAAIAAYagAAAAEG5WjhmfKvjjw8e9raR5Fz2FFgieTMQddiiVd+lGNjjQQ37acmMretgZ547KX4UN1w==", "Admin" },
+                    { 2, "specialist@eventease.com", "AQAAAAIAAYagAAAAED+hvEw62MOxISLrGaCxt/jjP++vp7Rbf6LvCaE9Nxw2LaHZiNOyqLswykOGFnbSQw==", "Specialist" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Venues",
-                columns: new[] { "VenueId", "Capacity", "ImageUrl", "Location", "VenueName" },
+                columns: new[] { "VenueId", "Capacity", "ImageUrl", "IsAvailable", "Location", "VenueName" },
                 values: new object[,]
                 {
-                    { 1, 500, "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800", "123 Marble Ave, Cape Town", "The Grand Ballroom" },
-                    { 2, 150, "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=800", "45 Ocean View, Durban", "Sunset Garden" },
-                    { 3, 1000, "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800", "88 Innovation Dr, Sandton", "Tech Hub Plaza" },
-                    { 4, 30, "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800", "12 Main St, Pretoria", "Cozy Corner Café" }
+                    { 1, 500, "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800", true, "123 Marble Ave, Cape Town", "The Grand Ballroom" },
+                    { 2, 150, "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=800", true, "45 Ocean View, Durban", "Sunset Garden" },
+                    { 3, 1000, "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800", true, "88 Innovation Dr, Sandton", "Tech Hub Plaza" },
+                    { 4, 30, "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800", true, "12 Main St, Pretoria", "Cozy Corner Café" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Events",
-                columns: new[] { "EventId", "Description", "EndDateTime", "EventName", "ImageUrl", "StartDateTime", "VenueId" },
+                columns: new[] { "EventId", "Description", "EndDateTime", "EventName", "EventTypeId", "ImageUrl", "StartDateTime", "VenueId" },
                 values: new object[,]
                 {
-                    { 1, "Formal dinner and auction.", new DateTime(2026, 5, 10, 23, 59, 0, 0, DateTimeKind.Unspecified), "Annual Charity Gala", "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000", new DateTime(2026, 5, 10, 18, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, "Technical conference.", new DateTime(2026, 6, 15, 17, 0, 0, 0, DateTimeKind.Unspecified), "Cloud Dev Summit", "https://images.unsplash.com/photo-1540575861501-7ce0e1d1aa6f?q=80&w=1000", new DateTime(2026, 6, 15, 8, 0, 0, 0, DateTimeKind.Unspecified), 3 },
-                    { 3, "Private ceremony.", new DateTime(2026, 7, 20, 22, 0, 0, 0, DateTimeKind.Unspecified), "Smith Wedding", "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000", new DateTime(2026, 7, 20, 14, 0, 0, 0, DateTimeKind.Unspecified), 2 }
+                    { 1, "Formal dinner and auction.", new DateTime(2026, 5, 10, 23, 59, 0, 0, DateTimeKind.Unspecified), "Annual Charity Gala", 4, "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000", new DateTime(2026, 5, 10, 18, 0, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 2, "Technical conference.", new DateTime(2026, 6, 15, 17, 0, 0, 0, DateTimeKind.Unspecified), "Cloud Dev Summit", 2, "https://images.unsplash.com/photo-1540575861501-7ce0e1d1aa6f?q=80&w=1000", new DateTime(2026, 6, 15, 8, 0, 0, 0, DateTimeKind.Unspecified), 3 },
+                    { 3, "Private ceremony.", new DateTime(2026, 7, 20, 22, 0, 0, 0, DateTimeKind.Unspecified), "Smith Wedding", 1, "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000", new DateTime(2026, 7, 20, 14, 0, 0, 0, DateTimeKind.Unspecified), 2 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Bookings",
-                columns: new[] { "BookingId", "BookingDate", "EventId", "VenueId" },
-                values: new object[] { 1, new DateTime(2026, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 1 });
+                columns: new[] { "BookingId", "BookingDate", "CustomerName", "CustomerPhone", "CustomerSurname", "EventId", "VenueId" },
+                values: new object[] { 1, new DateTime(2026, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "0123456789", "Tester", 1, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_EventId",
@@ -138,6 +173,11 @@ namespace EventEase.Migrations
                 name: "IX_Bookings_VenueId",
                 table: "Bookings",
                 column: "VenueId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_EventTypeId",
+                table: "Events",
+                column: "EventTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_VenueId",
@@ -156,6 +196,9 @@ namespace EventEase.Migrations
 
             migrationBuilder.DropTable(
                 name: "Events");
+
+            migrationBuilder.DropTable(
+                name: "EventTypes");
 
             migrationBuilder.DropTable(
                 name: "Venues");

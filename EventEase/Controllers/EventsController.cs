@@ -30,15 +30,49 @@ namespace EventEase.Controllers
             return role == "Admin" || role == "Specialist";
         }
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? eventTypeId, DateTime? startDate, DateTime? endDate)
         {
-            ViewData["CurrentFilter"] = searchString;
-            var events = from e in _context.Events.Include(e => e.Venue) select e;
+            // 1. Base Query
+            var events = _context.Events
+                .Include(e => e.Venue)
+                .Include(e => e.EventType)
+                .AsQueryable();
 
-            if (!String.IsNullOrEmpty(searchString))
+            // 2. Filter by Search Name OR "#EE-1" Event ID
+            if (!string.IsNullOrEmpty(searchString))
             {
-                events = events.Where(s => s.EventName.Contains(searchString));
+                // Clean the search string just like in bookings
+                string cleanString = searchString.ToUpper().Replace("#EE-", "").Replace("EE-", "").Trim();
+                bool isId = int.TryParse(cleanString, out int searchId);
+
+                events = events.Where(e => e.EventName.Contains(searchString) ||
+                                           (isId && e.EventId == searchId));
             }
+
+            // 3. Filter by Event Type (Lookup Table)
+            if (eventTypeId.HasValue)
+            {
+                events = events.Where(e => e.EventTypeId == eventTypeId.Value);
+            }
+
+            // 4. Filter by Date Range
+            if (startDate.HasValue)
+            {
+                events = events.Where(e => e.StartDateTime >= startDate.Value);
+            }
+            if (endDate.HasValue)
+            {
+                events = events.Where(e => e.StartDateTime <= endDate.Value);
+            }
+
+            // 5. Populate the Filter Dropdown & Keep UI data populated
+            // Note: I changed ViewBag.EventTypeId to ViewBag.EventTypes to match the HTML we built
+            ViewBag.EventTypes = new SelectList(_context.EventTypes, "EventTypeId", "TypeName", eventTypeId);
+
+            // Remember the user's inputs
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
 
             return View(await events.ToListAsync());
         }

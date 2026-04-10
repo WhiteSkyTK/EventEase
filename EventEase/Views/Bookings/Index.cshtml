@@ -13,15 +13,42 @@
     <a asp-action="Create" class="btn btn-dark fw-bold border-3">+ Create New Reservation</a>
 </div>
 
-<div class="card p-3 mb-4 border-3 shadow-sm" style="border-radius: 15px; border: 3px solid #000;">
-    <form asp-action="Index" method="get" class="row g-3">
-        <div class="col-md-10">
-            <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by Event Name or ID..." />
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100 fw-bold">Search</button>
-        </div>
-    </form>
+<div class="card border-3 mb-4 shadow-sm">
+    <div class="card-body bg-light">
+        <form asp-action="Index" method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="fw-bold">Search Name or ID</label>
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search..." />
+            </div>
+
+            <div class="col-md-2">
+                <label class="fw-bold">Category</label>
+                <select name="eventTypeId" class="form-select" asp-items="ViewBag.EventTypes">
+                    <option value="">-- All --</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="fw-bold">From</label>
+                <input type="date" name="startDate" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="fw-bold">To</label>
+                <input type="date" name="endDate" class="form-control" />
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <div class="form-check mb-2">
+                    <input type="checkbox" name="onlyAvailable" value="true" class="form-check-input" />
+                    <label class="form-check-label fw-bold">Available Only</label>
+                </div>
+            </div>
+
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-dark w-100 fw-bold">FILTER</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="table-responsive bg-white border-3 shadow" style="border: 3px solid #000; border-radius: 20px;">

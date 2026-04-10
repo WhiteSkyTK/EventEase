@@ -27,11 +27,21 @@
 
     <div class="card p-4 mb-4 border-3 shadow-sm" style="border-radius: 20px; background-color: white; border: 3px solid #000;">
         <form asp-action="Index" method="get" class="row g-3 align-items-end">
-            <div class="col-md-9">
-                <label class="fw-bold mb-1">Search Events</label>
-                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by event name..." />
+            <div class="col-md-4">
+                <label class="fw-bold mb-1">Search Name or ID</label>
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="e.g. 1 or Gala..." />
             </div>
             <div class="col-md-3">
+                <label class="fw-bold mb-1">Category</label>
+                <select name="eventTypeId" class="form-select" asp-items="ViewBag.EventTypes">
+                    <option value="">-- All Categories --</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="fw-bold mb-1">From Date</label>
+                <input type="date" name="startDate" value="@ViewData["StartDate"]" class="form-control" />
+            </div>
+            <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100 fw-bold">🔍 Filter</button>
             </div>
         </form>
