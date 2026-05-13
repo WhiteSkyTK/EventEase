@@ -28,6 +28,14 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label asp-for="EventTypeId" class="fw-bold">Event Category</label>
+                        <select asp-for="EventTypeId" class="form-control border-2" asp-items="ViewBag.EventTypeId">
+                            <option value="">-- Select Category --</option>
+                        </select>
+                        <span asp-validation-for="EventTypeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
                         <label asp-for="VenueId" class="fw-bold">Location</label>
                         <select asp-for="VenueId" class="form-control border-2" asp-items="ViewBag.VenueId"></select>
                     </div>

@@ -149,16 +149,18 @@ namespace EventEase.Controllers
             if (!IsAuthorized()) return RedirectToAction("Index", "Home");
             var eventItem = await _context.Events.FindAsync(id);
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", eventItem?.VenueId);
+            ViewBag.EventTypeId = new SelectList(_context.EventTypes, "EventTypeId", "TypeName", eventItem?.EventTypeId);
             return eventItem == null ? NotFound() : View(eventItem);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EventId,EventName,Description,StartDateTime,EndDateTime,VenueId,ImageUrl")] Event eventItem, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("EventId,EventName,Description,StartDateTime,EndDateTime,VenueId,ImageUrl,EventTypeId")] Event eventItem, IFormFile? imageFile)
         {
             if (id != eventItem.EventId || !IsAuthorized()) return NotFound();
 
             ModelState.Remove("Venue");
+            ModelState.Remove("EventType");
             ModelState.Remove("Bookings");
             ModelState.Remove("ImageUrl");
 
@@ -211,6 +213,7 @@ namespace EventEase.Controllers
             }
 
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", eventItem.VenueId);
+            ViewBag.EventTypeId = new SelectList(_context.EventTypes, "EventTypeId", "TypeName", eventItem.EventTypeId);
             return View(eventItem);
         }
 
