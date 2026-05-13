@@ -251,6 +251,7 @@ namespace EventEase.Controllers
 
             var eventItem = await _context.Events
                 .Include(e => e.Venue)
+                .Include(e => e.EventType)
                 .FirstOrDefaultAsync(m => m.EventId == id);
 
             if (eventItem == null) return NotFound();

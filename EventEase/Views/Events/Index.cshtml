@@ -63,6 +63,12 @@
                             <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
                                 <div class="mb-2">
                                     <span class="badge bg-warning text-dark border border-2 border-dark fw-bold">CONFIRMED</span>
+
+                                    <!-- ADDED: Category Badge -->
+                                    <span class="badge bg-info text-dark border border-2 border-dark fw-bold ms-1">
+                                        @item.EventType?.TypeName.ToUpper()
+                                    </span>
+
                                     <span class="ms-2 text-muted fw-bold small">ID: #EE-@item.EventId</span>
                                 </div>
                                 <h2 class="fw-bold mb-1" style="color: #000;">@item.EventName</h2>
