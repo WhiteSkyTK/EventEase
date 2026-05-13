@@ -45,6 +45,14 @@
                             </div>
 
                             <div class="mb-3">
+                                <label asp-for="EventTypeId" class="form-label fw-bold">Event Category</label>
+                                <select asp-for="EventTypeId" class="form-select border-2" asp-items="ViewBag.EventTypeId">
+                                    <option value="">-- Select a Category --</option>
+                                </select>
+                                <span asp-validation-for="EventTypeId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
                                 <label asp-for="VenueId" class="form-label fw-bold">Assign Venue</label>
                                 <select asp-for="VenueId" class="form-select border-2" asp-items="ViewBag.VenueId">
                                     <option value="">-- Optional: Assign Later --</option>

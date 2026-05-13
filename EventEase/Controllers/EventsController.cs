@@ -82,17 +82,19 @@ namespace EventEase.Controllers
         {
             if (!IsAuthorized()) return RedirectToAction("Index", "Home");
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName");
+            ViewBag.EventTypeId = new SelectList(_context.EventTypes, "EventTypeId", "TypeName");
             return View(new Event()); // Fix: Pass empty object to prevent NullRef in view
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EventId,EventName,Description,StartDateTime,EndDateTime,VenueId,ImageUrl")] Event eventItem, IFormFile? imageFile)
+        public async Task<IActionResult> Create([Bind("EventId,EventName,Description,StartDateTime,EndDateTime,VenueId,ImageUrl,EventTypeId")] Event eventItem, IFormFile? imageFile)
         {
             if (!IsAuthorized()) return RedirectToAction("Login", "Account");
 
             // 1. Clear navigation properties so they don't break validation
             ModelState.Remove("Venue");
+            ModelState.Remove("EventType");
             ModelState.Remove("Bookings");
             ModelState.Remove("ImageUrl"); // Remove this so file uploads don't trigger string required errors
 
@@ -138,6 +140,7 @@ namespace EventEase.Controllers
             }
 
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", eventItem.VenueId);
+            ViewBag.EventTypeId = new SelectList(_context.EventTypes, "EventTypeId", "TypeName", eventItem.EventTypeId);
             return View(eventItem);
         }
 
